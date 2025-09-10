@@ -8,6 +8,6 @@ export class UsersResolver {
 
   @Query(() => [UserModel], { name: 'users' })
   async getUsers() {
-    return this.usersService.getUser();
+    return this.usersService.getUsers();
   }
 }

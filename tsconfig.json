@@ -34,6 +34,12 @@
       ],
       "@app/graphql/*": [
         "libs/graphql/src/*"
+      ],
+      "@app/prisma": [
+        "libs/prisma/src"
+      ],
+      "@app/prisma/*": [
+        "libs/prisma/src/*"
       ]
     }
   }
