@@ -23,13 +23,17 @@
     "test:e2e": "jest --config ./apps/job-microservices/test/jest-e2e.json"
   },
   "dependencies": {
+    "@graphql-yoga/nestjs": "^3.15.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/graphql": "^13.1.0",
     "@nestjs/platform-express": "^11.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
+    "graphql": "^16.11.0",
+    "graphql-yoga": "^5.15.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -79,7 +83,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/graphql(|/.*)$": "<rootDir>/libs/graphql/src/$1"
     }
   }
 }
