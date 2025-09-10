@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { UsersModule } from './users/users.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
@@ -16,9 +15,10 @@ import { UsersModule } from './users/users.module';
       context: ({ req, res }) => ({ req, res }),
       autoSchemaFile: true,
     }),
-    UsersModule
+    UsersModule,
+    AuthenticationModule
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [],
+  providers: [],
 })
-export class AuthModule {}
+export class AuthModule { }
