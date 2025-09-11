@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { HealthCheckController } from './healthcheck/healthcheck.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
     UsersModule,
     AuthenticationModule
   ],
-  controllers: [],
+  controllers: [HealthCheckController],
   providers: [],
 })
 export class AuthModule { }
