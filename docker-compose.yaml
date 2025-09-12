@@ -27,7 +27,7 @@ services:
       - JWT_SECRET=YxD1NH9ox4zu81AoiTEng10kVgPOYIhf
       - JWT_EXPIRATION_MS=2880000
     ports:
-      - '3001:3000'
+      - '3000:3000'
     depends_on:
       postgres:
         condition: service_healthy

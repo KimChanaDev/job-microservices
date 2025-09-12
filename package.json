@@ -6,15 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
-    "build:auth": "nest build auth",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
-    "start:auth": "nest start auth",
-    "start:auth:prod": "node dist/apps/auth/main.js",
-    "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/job-microservices/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -23,10 +16,20 @@
     "test:e2e": "jest --config ./apps/job-microservices/test/jest-e2e.json",
     "prisma:generate": "prisma generate --schema ./apps/auth/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --name users_table --schema ./apps/auth/prisma/schema.prisma",
-    "generate-ts-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./libs/grpc/src/types --ts_proto_opt=nestJs=true --proto_path=./libs/grpc/src/proto auth.proto"
+    "generate-ts-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./libs/grpc/src/types --ts_proto_opt=nestJs=true --proto_path=./libs/grpc/src/proto auth.proto",
+    "build:auth": "nest build auth",
+    "build:jobs": "nest build jobs",
+    "build:all": "npm-run-all --parallel build:auth build:jobs",
+    "start:auth": "nest start auth --watch",
+    "start:jobs": "nest start jobs --watch",
+    "start:auth:prod": "node dist/apps/auth/main.js",
+    "start:jobs:prod": "node dist/apps/jobs/main.js",
+    "start:dev": "concurrently -n AUTH,JOBS -c blue,green \"npm run start:auth\" \"npm run start:jobs\""
   },
   "dependencies": {
+    "@golevelup/nestjs-discovery": "^5.0.0",
     "@graphql-yoga/nestjs": "^3.15.2",
+    "@grpc/grpc-js": "^1.13.4",
     "@grpc/proto-loader": "^0.8.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.1",
@@ -43,9 +46,11 @@
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
     "graphql": "^16.11.0",
+    "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^5.15.2",
     "passport-jwt": "^4.0.1",
     "prisma": "^6.16.1",
+    "pulsar-client": "^1.14.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "ts-proto": "^2.7.7"
@@ -60,11 +65,13 @@
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "concurrently": "^9.2.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
@@ -99,7 +106,8 @@
       "^@app/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@app/graphql(|/.*)$": "<rootDir>/libs/graphql/src/$1",
       "^@app/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1",
-      "^@app/prisma(|/.*)$": "<rootDir>/libs/prisma/src/$1"
+      "^@app/prisma(|/.*)$": "<rootDir>/libs/prisma/src/$1",
+      "^@app/pulsar(|/.*)$": "<rootDir>/libs/pulsar/src/$1"
     }
   }
 }

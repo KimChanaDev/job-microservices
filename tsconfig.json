@@ -46,6 +46,12 @@
       ],
       "@app/prisma/*": [
         "libs/prisma/src/*"
+      ],
+      "@app/pulsar": [
+        "libs/pulsar/src"
+      ],
+      "@app/pulsar/*": [
+        "libs/pulsar/src/*"
       ]
     }
   }
