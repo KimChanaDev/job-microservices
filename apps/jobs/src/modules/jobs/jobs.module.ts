@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
-import { HealthCheckController } from './controllers/healthcheck.controller';
+import { HealthCheckController } from '../../controllers/healthcheck.controller';
+import { JobsResolver } from './jobs.resolver';
+import { JobsService } from './jobs.service';
 
 @Module({
   imports: [
@@ -15,6 +17,6 @@ import { HealthCheckController } from './controllers/healthcheck.controller';
     }),
   ],
   controllers: [HealthCheckController],
-  providers: [],
+  providers: [JobsResolver, JobsService],
 })
 export class JobsModule { }

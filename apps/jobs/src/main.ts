@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { JobsModule } from './jobs.module';
+import { JobsModule } from './modules/jobs/jobs.module';
 import { APPNAME, init } from '@app/common';
 
 async function bootstrap() {
