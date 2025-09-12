@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
-import { JobsController } from './jobs.controller';
-import { JobsService } from './jobs.service';
+import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
+import { HealthCheckController } from './controllers/healthcheck.controller';
 
 @Module({
-  imports: [],
-  controllers: [JobsController],
-  providers: [JobsService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    GraphQLModule.forRoot<YogaDriverConfig>({
+      driver: YogaDriver,
+      autoSchemaFile: true,
+    }),
+  ],
+  controllers: [HealthCheckController],
+  providers: [],
 })
-export class JobsModule {}
+export class JobsModule { }

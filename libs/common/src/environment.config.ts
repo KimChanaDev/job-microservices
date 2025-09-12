@@ -5,7 +5,8 @@ export function getEnvironment(env: string, appName: APPNAME): string {
 }
 
 export enum APPNAME {
-  Auth = 'auth'
+  Auth = 'auth',
+  Jobs = 'jobs',
 }
 
 export function isProdEnv(configService: ConfigService): boolean {

@@ -11,8 +11,8 @@ export class HealthCheckController {
         return {
             status: 'ok',
             timestamp: new Date().toISOString(),
-            service: 'auth-service',
-            version: this.configService.get(getEnvironment("APP_VERSION", APPNAME.Auth)) || '1.0.0',
+            service: 'jobs-service',
+            version: this.configService.getOrThrow(getEnvironment("APP_VERSION", APPNAME.Jobs)),
         };
     }
 }
