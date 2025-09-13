@@ -24,6 +24,6 @@ export async function init(app: INestApplication, appName: APPNAME) {
   const port = configService.getOrThrow(getEnvironment('PORT', appName));
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
+    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}/healthcheck`,
   );
 }

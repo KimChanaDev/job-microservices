@@ -1,6 +1,5 @@
 FROM node:24.7-slim as builder
 WORKDIR /workspace
-
 RUN apt-get update && apt-get install -y \
     protobuf-compiler \
     openssl \
@@ -15,13 +14,11 @@ COPY tsconfig*.json ./
 COPY eslint.config.mjs ./
 COPY nest-cli.json ./
 
-COPY apps/jobs ./apps/jobs
+COPY apps/executor ./apps/executor
 COPY libs/common ./libs/common
-COPY libs/graphql ./libs/graphql
-COPY libs/grpc ./libs/grpc
 COPY libs/pulsar ./libs/pulsar
-RUN npm run generate-ts-proto
-RUN npm run build:jobs
+
+RUN npm run build:executor
 
 
 FROM node:24.7-slim as runner
@@ -41,7 +38,7 @@ COPY --from=builder /workspace/dist ./dist
 
 ENV NODE_ENV=
 ENV PULSAR_SERVICE_URL=
-ENV JOBS_APP_VERSION=
-ENV JOBS_PORT=
+ENV EXECUTOR_APP_VERSION=
+ENV EXECUTOR_PORT=
 
-CMD ["npm", "run", "start:jobs:prod" ]
+CMD ["npm", "run", "start:executor:prod" ]

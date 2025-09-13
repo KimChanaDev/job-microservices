@@ -32,6 +32,15 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
+    "executor": {
+      "type": "application",
+      "root": "apps/executor",
+      "entryFile": "main",
+      "sourceRoot": "apps/executor/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/executor/tsconfig.app.json"
+      }
+    },
     "graphql": {
       "type": "library",
       "root": "libs/graphql",

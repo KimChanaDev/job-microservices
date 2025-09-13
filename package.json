@@ -19,12 +19,15 @@
     "generate-ts-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./libs/grpc/src/types --ts_proto_opt=nestJs=true --proto_path=./libs/grpc/src/proto auth.proto",
     "build:auth": "nest build auth",
     "build:jobs": "nest build jobs",
-    "build:all": "npm-run-all --parallel build:auth build:jobs",
+    "build:executor": "nest build executor",
+    "build:all": "npm-run-all --parallel build:auth build:jobs build:executor",
     "start:auth": "nest start auth --watch",
-    "start:jobs": "nest start jobs --watch",
     "start:auth:prod": "node dist/apps/auth/main.js",
+    "start:jobs": "nest start jobs --watch",
     "start:jobs:prod": "node dist/apps/jobs/main.js",
-    "start:dev": "concurrently -n AUTH,JOBS -c blue,green \"npm run start:auth\" \"npm run start:jobs\""
+    "start:executor": "nest start executor --watch",
+    "start:executor:prod": "node dist/apps/executor/main.js",
+    "start:dev": "concurrently -n AUTH,JOBS,EXECUTOR -c blue,green,yellow \"npm run start:auth\" \"npm run start:jobs\" \"npm run start:executor\""
   },
   "dependencies": {
     "@golevelup/nestjs-discovery": "^5.0.0",
@@ -45,6 +48,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
+    "fibonacci": "^1.6.12",
     "graphql": "^16.11.0",
     "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^5.15.2",
