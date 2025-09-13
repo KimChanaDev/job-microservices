@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm ci
+COPY apps/auth/package*.json ./apps/auth/
+COPY apps/jobs/package*.json ./apps/jobs/
+COPY apps/executor/package*.json ./apps/executor/
+RUN npm install
 
 COPY tsconfig*.json ./
 COPY eslint.config.mjs ./
@@ -20,6 +23,7 @@ COPY libs/common ./libs/common
 COPY libs/graphql ./libs/graphql
 COPY libs/grpc ./libs/grpc
 COPY libs/pulsar ./libs/pulsar
+
 RUN npm run generate-ts-proto
 RUN npm run build:jobs
 
@@ -33,9 +37,9 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /workspace/package.json ./
-COPY --from=builder /workspace/package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY package*.json ./
+COPY apps/jobs/package*.json ./apps/jobs/
+RUN npm install --workspace=apps/jobs --omit=dev && npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
 

@@ -2,7 +2,6 @@ import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { APPNAME, getEnvironment, isProdEnv } from './environment.config';
-import { GraphQLExceptionFilter } from '@app/graphql';
 
 export async function init(app: INestApplication, appName: APPNAME) {
   const globalPrefix = 'api';
@@ -18,7 +17,6 @@ export async function init(app: INestApplication, appName: APPNAME) {
     // disableErrorMessages: false = Show detailed error messages from class-validator (for development/debugging)
     disableErrorMessages: isProdEnv(configService),
   }));
-  app.useGlobalFilters(new GraphQLExceptionFilter());
   app.setGlobalPrefix(globalPrefix);
   app.use(cookieParser());
   const port = configService.getOrThrow(getEnvironment('PORT', appName));

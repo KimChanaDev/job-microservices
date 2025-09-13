@@ -8,7 +8,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm ci
+COPY apps/auth/package*.json ./apps/auth/
+COPY apps/jobs/package*.json ./apps/jobs/
+COPY apps/executor/package*.json ./apps/executor/
+RUN npm install
 
 COPY tsconfig*.json ./
 COPY eslint.config.mjs ./
@@ -34,9 +37,9 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /workspace/package.json ./
-COPY --from=builder /workspace/package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY package*.json ./
+COPY apps/auth/package*.json ./apps/auth/
+RUN npm install --workspace=apps/auth --omit=dev && npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
 COPY --from=builder /workspace/apps/auth/prisma ./prisma
@@ -47,7 +50,6 @@ RUN chmod +x ./entrypoint.sh
 ENV NODE_ENV=
 ENV AUTH_JWT_SECRET=
 ENV AUTH_JWT_EXPIRATION_MS=
-
 ENV AUTH_APP_VERSION=
 ENV AUTH_DATABASE_URL=
 ENV AUTH_PORT=

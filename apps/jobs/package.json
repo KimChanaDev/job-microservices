@@ -1,0 +1,22 @@
+{
+  "name": "@job-microservices/jobs",
+  "version": "0.0.1",
+  "description": "Jobs microservice",
+  "main": "dist/main.js",
+  "scripts": {
+  },
+  "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/microservices": "^11.1.6",
+    "@nestjs/graphql": "^13.1.0",
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0",
+    "@graphql-yoga/nestjs": "^3.15.2",
+    "fibonacci": "^1.6.12",
+    "graphql": "^16.11.0",
+    "graphql-type-json": "^0.3.2",
+    "graphql-yoga": "^5.15.2",
+    "pulsar-client": "^1.14.0",
+    "ts-proto": "^2.7.7"
+  }
+}

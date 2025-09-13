@@ -1,0 +1,13 @@
+{
+  "name": "@job-microservices/executor",
+  "version": "0.0.1",
+  "description": "Job executor microservice",
+  "main": "dist/main.js",
+  "scripts": {
+  },
+  "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "fibonacci": "^1.6.12",
+    "pulsar-client": "^1.14.0"
+  }
+}

@@ -5,9 +5,11 @@ import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { AUTH_PACKAGE_NAME } from '@app/grpc';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
+import { GraphQLExceptionFilter } from '@app/graphql';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
+  app.useGlobalFilters(new GraphQLExceptionFilter());
   init(app, APPNAME.Auth);
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
