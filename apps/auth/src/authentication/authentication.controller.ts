@@ -1,7 +1,8 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
     AuthenticationRequest, AuthenticationResponse,
-    AuthServiceController, AuthServiceControllerMethods
+    AuthServiceController, AuthServiceControllerMethods,
+    GrpcLoggingInterceptor
 } from '@app/grpc';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -11,6 +12,7 @@ import { Observable } from 'rxjs';
 
 @Controller()
 @AuthServiceControllerMethods()
+@UseInterceptors(GrpcLoggingInterceptor)
 export class AuthenticationController implements AuthServiceController {
     constructor(private readonly userService: UsersService) { }
 

@@ -1,6 +1,7 @@
 import { Plugin as EnvelopPlugin } from '@envelop/core';
 import { Logger } from '@nestjs/common';
 import { print } from 'graphql';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export function gqlLoggingPlugin(): EnvelopPlugin {
@@ -39,7 +40,9 @@ export function gqlLoggingPlugin(): EnvelopPlugin {
                     const query = args.document ? print(args.document) : 'Unknown';
                     const variables = args.variableValues;
                     const executionEndTime = Date.now();
+                    const requestId = uuidv4();
                     const message = {
+                        requestId,
                         headers: headers || {},
                         query: `${query.substring(0, 200)}${query.length > 200 ? '...' : ''}`,
                         variables: (variables && Object.keys(variables).length > 0) ? variables : {},
@@ -47,7 +50,7 @@ export function gqlLoggingPlugin(): EnvelopPlugin {
                         durations: `${executionEndTime - requestStartTime}ms`,
                     }
 
-                    logger.log(`Details: ${JSON.stringify(message)}`);
+                    logger.log(message);
 
                     // Check for GraphQL errors
                     if (result && 'errors' in result && result.errors && result.errors.length > 0) {
