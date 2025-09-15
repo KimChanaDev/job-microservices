@@ -45,7 +45,7 @@ jobs:
             DOCKERFILE_PATH=$(echo $IMAGE | cut -d' ' -f2)
 
             {
-              docker build -t 028767427893.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest -f $DOCKERFILE_PATH . && \
+              docker build -t 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/$IMAGE_NAME:latest -f $DOCKERFILE_PATH . && \
               docker push 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/$IMAGE_NAME:latest
             } & # Run in background
           done
