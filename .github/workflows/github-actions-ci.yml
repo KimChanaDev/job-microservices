@@ -1,8 +1,8 @@
-name: GitHub Actions Demo
+name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: [push, pull_request]
 jobs:
-  Explore-GitHub-Actions:
+  Jobber-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -16,3 +16,13 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+      # Cache node_modules
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.7.0
+          cache: 'npm'
+
+      - name: Setup Protoc
+        uses: arduino/setup-protoc@v3.0.0
+
+      - run: npm ci --legacy-peer-deps
