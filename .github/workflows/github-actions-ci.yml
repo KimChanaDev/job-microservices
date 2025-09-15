@@ -8,24 +8,16 @@ jobs:
   Jobber-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v5
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-      # Cache node_modules
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24.7.0
           cache: 'npm'
 
-      - name: Setup Protoc
+      - name: Setup Protocol Buffers
         uses: arduino/setup-protoc@v3.0.0
 
       # - run: npm ci --legacy-peer-deps
@@ -44,17 +36,17 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           IMAGES=(
-            "jobber/auth apps/auth/Dockerfile"
-            "jobber/jobs apps/jobs/Dockerfile"
-            "jonber/executor apps/executor/Dockerfile" 
+            "auth apps/auth/Dockerfile"
+            "jobs apps/jobs/Dockerfile"
+            "executor apps/executor/Dockerfile" 
           )
           for IMAGE in "${IMAGES[@]}"; do
             IMAGE_NAME=$(echo $IMAGE | cut -d' ' -f1)
             DOCKERFILE_PATH=$(echo $IMAGE | cut -d' ' -f2)
 
             {
-              docker build -t 028767427893.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest -f $DOCKERFILE_PATH .
-              docker push 028767427893.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest
+              docker build -t 028767427893.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:latest -f $DOCKERFILE_PATH . && \
+              docker push 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/$IMAGE_NAME:latest
             } & # Run in background
           done
           wait  # Wait for all background processes to finish
