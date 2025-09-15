@@ -1,6 +1,10 @@
 name: GitHub Actions CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
 permissions:
   actions: read
   contents: read
