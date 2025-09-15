@@ -44,9 +44,9 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           IMAGES=(
-            "auth apps/auth/Dockerfile"
-            "jobs apps/jobs/Dockerfile"
-            "executor apps/executor/Dockerfile" 
+            "jobber/auth apps/auth/Dockerfile"
+            "jobber/jobs apps/jobs/Dockerfile"
+            "jonber/executor apps/executor/Dockerfile" 
           )
           for IMAGE in "${IMAGES[@]}"; do
             IMAGE_NAME=$(echo $IMAGE | cut -d' ' -f1)
