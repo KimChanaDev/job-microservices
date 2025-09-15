@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AuthModule } from './auth.module';
+import { AuthAppModule } from './auth-app.module';
 import { APPNAME, getEnvironment, init } from '@app/common';
 import { GrpcOptions, Transport } from '@nestjs/microservices';
 import { AUTH_PACKAGE_NAME } from '@app/grpc';
@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { GraphQLExceptionFilter } from '@app/graphql';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AuthModule);
+  const app = await NestFactory.create(AuthAppModule, { bufferLogs: true });
   app.useGlobalFilters(new GraphQLExceptionFilter());
   init(app, APPNAME.Auth);
   app.connectMicroservice<GrpcOptions>({

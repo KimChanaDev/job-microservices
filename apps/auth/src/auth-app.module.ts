@@ -6,9 +6,11 @@ import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { HealthCheckController } from './controllers/healthcheck.controller';
 import { GqlContext } from '@app/graphql';
+import { LoggerModule } from '@app/common';
 
 @Module({
   imports: [
+    LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -23,4 +25,4 @@ import { GqlContext } from '@app/graphql';
   controllers: [HealthCheckController],
   providers: [],
 })
-export class AuthModule { }
+export class AuthAppModule { }

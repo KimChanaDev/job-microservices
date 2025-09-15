@@ -1,7 +1,8 @@
-import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { APPNAME, getEnvironment, isProdEnv } from './environment.config';
+import { Logger } from 'nestjs-pino'
 
 export async function init(app: INestApplication, appName: APPNAME) {
   const globalPrefix = 'api';
@@ -18,10 +19,9 @@ export async function init(app: INestApplication, appName: APPNAME) {
     disableErrorMessages: isProdEnv(configService),
   }));
   app.setGlobalPrefix(globalPrefix);
+  app.useLogger(app.get(Logger));
   app.use(cookieParser());
   const port = configService.getOrThrow(getEnvironment('PORT', appName));
   await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}/healthcheck`,
-  );
+  app.get(Logger).log(`Application is running on: http://localhost:${port}/${globalPrefix}/healthcheck`);
 }

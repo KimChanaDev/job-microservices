@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { APPNAME, init } from '@app/common';
-import { ExecutorModule } from './executor.module';
+import { ExecutorAppModule } from './executor-app.module';
 async function bootstrap() {
-  const app = await NestFactory.create(ExecutorModule);
+  const app = await NestFactory.create(ExecutorAppModule, { bufferLogs: true });
   init(app, APPNAME.Executor);
 }
 
