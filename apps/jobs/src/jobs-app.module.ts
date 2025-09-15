@@ -5,6 +5,7 @@ import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { HealthCheckController } from './controllers/healthcheck.controller';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { LoggerModule } from '@app/common';
+import { gqlLoggingPlugin } from '@app/graphql';
 
 @Module({
   imports: [
@@ -15,6 +16,9 @@ import { LoggerModule } from '@app/common';
     GraphQLModule.forRoot<YogaDriverConfig>({
       driver: YogaDriver,
       autoSchemaFile: true,
+      plugins: [
+        gqlLoggingPlugin()
+      ],
     }),
     JobsModule
   ],

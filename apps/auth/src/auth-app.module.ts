@@ -5,7 +5,7 @@ import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { HealthCheckController } from './controllers/healthcheck.controller';
-import { GqlContext } from '@app/graphql';
+import { GqlContext, gqlLoggingPlugin } from '@app/graphql';
 import { LoggerModule } from '@app/common';
 
 @Module({
@@ -18,6 +18,9 @@ import { LoggerModule } from '@app/common';
       driver: YogaDriver,
       context: ({ req, res }: GqlContext) => ({ req, res }),
       autoSchemaFile: true,
+      plugins: [
+        gqlLoggingPlugin()
+      ],
     }),
     UsersModule,
     AuthenticationModule
