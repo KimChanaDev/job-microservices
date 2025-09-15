@@ -1,0 +1,56 @@
+name: GitHub Actions CI
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  actions: read
+  contents: read
+jobs:
+  Jobber-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.7.0
+          cache: 'npm'
+
+      - name: Setup Protocol Buffers
+        uses: arduino/setup-protoc@v3.0.0
+
+      # - run: npm ci --legacy-peer-deps
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login AWS CLI
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 028767427893.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          IMAGES=(
+            "auth apps/auth/Dockerfile"
+            "jobs apps/jobs/Dockerfile"
+            "executor apps/executor/Dockerfile" 
+          )
+          for IMAGE in "${IMAGES[@]}"; do
+            IMAGE_NAME=$(echo $IMAGE | cut -d' ' -f1)
+            DOCKERFILE_PATH=$(echo $IMAGE | cut -d' ' -f2)
+
+            {
+              docker build -t 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/$IMAGE_NAME:latest -f $DOCKERFILE_PATH . && \
+              docker push 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/$IMAGE_NAME:latest
+            } & # Run in background
+          done
+          wait  # Wait for all background processes to finish
