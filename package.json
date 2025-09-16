@@ -8,7 +8,12 @@
   "workspaces": [
     "apps/auth",
     "apps/jobs",
-    "apps/executor"
+    "apps/executor",
+    "libs/common",
+    "libs/graphql",
+    "libs/grpc",
+    "libs/prisma",
+    "libs/pulsar"
   ],
   "scripts": {
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
@@ -39,17 +44,16 @@
     "workspace:executor": "npm run --workspace=apps/executor"
   },
   "dependencies": {
-    "@golevelup/nestjs-discovery": "^5.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@prisma/client": "^6.16.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "nestjs-pino": "^4.4.0",
+    "fibonacci": "^1.6.12",
     "pino-http": "^10.5.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1",
-    "uuid": "^13.0.0"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

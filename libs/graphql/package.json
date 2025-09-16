@@ -1,0 +1,13 @@
+{
+  "name": "@job-microservices/graphql",
+  "version": "0.0.1",
+  "description": "GraphQL microservice utilities",
+  "scripts": {},
+  "dependencies": {
+    "uuid": "^13.0.0",
+    "@envelop/core": "^5.3.1",
+    "@nestjs/graphql": "^13.1.0",
+    "@nestjs/microservices": "^11.1.6",
+    "graphql": "^16.11.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@job-microservices/prisma",
+  "version": "0.0.1",
+  "description": "Prisma microservice utilities",
+  "scripts": {},
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "prisma": "^6.16.1"
+  }
+}

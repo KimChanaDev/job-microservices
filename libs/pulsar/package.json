@@ -1,0 +1,10 @@
+{
+  "name": "@job-microservices/pulsar",
+  "version": "0.0.1",
+  "description": "Pulsar microservice utilities",
+  "scripts": {},
+  "dependencies": {
+    "pulsar-client": "^1.14.0",
+    "@nestjs/config": "^4.0.2"
+  }
+}

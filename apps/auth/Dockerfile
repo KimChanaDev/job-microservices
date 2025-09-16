@@ -1,3 +1,6 @@
+##################################
+# Stage 1: Build the application #
+##################################
 FROM node:24.7-slim as builder
 WORKDIR /workspace
 RUN apt-get update && apt-get install -y \
@@ -9,8 +12,10 @@ RUN apt-get update && apt-get install -y \
 
 COPY package*.json ./
 COPY apps/auth/package*.json ./apps/auth/
-COPY apps/jobs/package*.json ./apps/jobs/
-COPY apps/executor/package*.json ./apps/executor/
+COPY libs/common/package*.json ./libs/common/
+COPY libs/graphql/package*.json ./libs/graphql/
+COPY libs/grpc/package*.json ./libs/grpc/
+COPY libs/prisma/package*.json ./libs/prisma/
 RUN npm install
 
 COPY tsconfig*.json ./
@@ -27,7 +32,9 @@ RUN npm run prisma:generate
 RUN npm run generate-ts-proto
 RUN npm run build:auth
 
-
+##################################
+# Stage 2: Run the application   #
+##################################
 FROM node:24.7-slim as runner
 WORKDIR /app
 RUN apt-get update && apt-get install -y \
@@ -39,7 +46,18 @@ RUN apt-get update && apt-get install -y \
 
 COPY package*.json ./
 COPY apps/auth/package*.json ./apps/auth/
-RUN npm install --workspace=apps/auth --omit=dev && npm cache clean --force
+COPY libs/common/package*.json ./libs/common/
+COPY libs/graphql/package*.json ./libs/graphql/
+COPY libs/grpc/package*.json ./libs/grpc/
+COPY libs/prisma/package*.json ./libs/prisma/
+
+RUN npm install --workspace=apps/auth \
+    --workspace=libs/common \
+    --workspace=libs/graphql \
+    --workspace=libs/grpc \
+    --workspace=libs/prisma \
+    --omit=dev && \
+    npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
 COPY --from=builder /workspace/apps/auth/prisma ./prisma

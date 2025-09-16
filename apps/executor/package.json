@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@nestjs/config": "^4.0.2",
-    "fibonacci": "^1.6.12",
-    "pulsar-client": "^1.14.0"
+    "fibonacci": "^1.6.12"
   }
 }

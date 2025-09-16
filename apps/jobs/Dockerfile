@@ -1,3 +1,6 @@
+##################################
+# Stage 1: Build the application #
+##################################
 FROM node:24.7-slim as builder
 WORKDIR /workspace
 
@@ -9,9 +12,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-COPY apps/auth/package*.json ./apps/auth/
 COPY apps/jobs/package*.json ./apps/jobs/
-COPY apps/executor/package*.json ./apps/executor/
+COPY libs/common/package*.json ./libs/common/
+COPY libs/graphql/package*.json ./libs/graphql/
+COPY libs/grpc/package*.json ./libs/grpc/
+COPY libs/pulsar/package*.json ./libs/pulsar/
 RUN npm install
 
 COPY tsconfig*.json ./
@@ -27,7 +32,9 @@ COPY libs/pulsar ./libs/pulsar
 RUN npm run generate-ts-proto
 RUN npm run build:jobs
 
-
+##################################
+# Stage 2: Run the application   #
+##################################
 FROM node:24.7-slim as runner
 WORKDIR /app
 RUN apt-get update && apt-get install -y \
@@ -39,7 +46,18 @@ RUN apt-get update && apt-get install -y \
 
 COPY package*.json ./
 COPY apps/jobs/package*.json ./apps/jobs/
-RUN npm install --workspace=apps/jobs --omit=dev && npm cache clean --force
+COPY libs/common/package*.json ./libs/common/
+COPY libs/graphql/package*.json ./libs/graphql/
+COPY libs/grpc/package*.json ./libs/grpc/
+COPY libs/pulsar/package*.json ./libs/pulsar/
+
+RUN npm install --workspace=apps/jobs \
+    --workspace=libs/common \
+    --workspace=libs/graphql \
+    --workspace=libs/grpc \
+    --workspace=libs/pulsar \
+    --omit=dev && \
+    npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
 

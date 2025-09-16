@@ -8,9 +8,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-COPY apps/auth/package*.json ./apps/auth/
-COPY apps/jobs/package*.json ./apps/jobs/
 COPY apps/executor/package*.json ./apps/executor/
+COPY libs/common/package*.json ./libs/common/
+COPY libs/pulsar/package*.json ./libs/pulsar/
 RUN npm install
 
 COPY tsconfig*.json ./
@@ -35,7 +35,13 @@ RUN apt-get update && apt-get install -y \
 
 COPY package*.json ./
 COPY apps/executor/package*.json ./apps/executor/
-RUN npm install --workspace=apps/executor --omit=dev && npm cache clean --force
+COPY libs/common/package*.json ./libs/common/
+COPY libs/pulsar/package*.json ./libs/pulsar/
+RUN npm install --workspace=apps/executor \
+    --workspace=libs/pulsar \
+    --workspace=libs/common \
+    --omit=dev && \
+    npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
 

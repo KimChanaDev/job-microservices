@@ -1,0 +1,12 @@
+{
+  "name": "@job-microservices/grpc",
+  "version": "0.0.1",
+  "description": "gRPC microservice utilities",
+  "scripts": {},
+  "dependencies": {
+    "uuid": "^13.0.0",
+    "ts-proto": "^2.7.7",
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.8.0"
+  }
+}

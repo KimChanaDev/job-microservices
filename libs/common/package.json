@@ -1,0 +1,11 @@
+{
+  "name": "@job-microservices/common",
+  "version": "0.0.1",
+  "description": "Common microservice utilities",
+  "scripts": {},
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "nestjs-pino": "^4.4.0",
+    "@nestjs/config": "^4.0.2"
+  }
+}
