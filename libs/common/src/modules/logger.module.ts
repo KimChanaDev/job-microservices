@@ -1,25 +1,25 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 import { ConfigService } from "@nestjs/config";
-import { isProdEnv } from "../environment.config";
+import { isDevEnv } from "../environment.config";
 
 
 @Module({
     imports: [
         PinoLoggerModule.forRootAsync({
             useFactory: (configService: ConfigService) => {
-                const isProd = isProdEnv(configService);
+                const isDev = isDevEnv(configService);
                 return {
                     pinoHttp: {
-                        transport: isProd
-                            ? undefined
-                            : {
+                        transport: isDev
+                            ? {
                                 target: 'pino-pretty',
                                 options: {
                                     singleLine: true,
                                 }
-                            },
-                        level: isProd ? 'info' : 'debug'
+                            }
+                            : undefined,
+                        level: isDev ? 'debug' : 'info'
                     }
                 }
             },
