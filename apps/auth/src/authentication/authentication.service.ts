@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { TokenPayload } from '@app/common';
+import { isProdEnv, TokenPayload } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from './dto/login.input';
@@ -28,7 +28,7 @@ export class AuthenticationService {
         const accessToken = this.jwtService.sign(tokenPayload);
         response.cookie('Authentication', accessToken, {
             httpOnly: true,
-            secure: this.configService.get('NODE_ENV') === 'production', //https only for production
+            secure: isProdEnv(this.configService), //https only for production
             expires,
         });
         return user;

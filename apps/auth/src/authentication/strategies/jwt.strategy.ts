@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     // if successful we get the JWT payload here
-    override validate(payload: TokenPayload): TokenPayload {
+    validate(payload: TokenPayload): TokenPayload {
         return payload;
     }
 }

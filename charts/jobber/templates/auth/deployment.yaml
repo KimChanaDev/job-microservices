@@ -1,0 +1,45 @@
+{{- if .Values.auth.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  labels:
+    app: auth
+spec:
+  replicas: {{ .Values.auth.replicas }}
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+      annotations:
+        timestamp: "{{ now | unixEpoch }}"
+        image-digest: "{{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}"
+        {{- if .Values.global.forceUpdate }}
+        force-update: "{{ .Values.global.forceUpdate }}"
+        {{- end }}
+    spec:
+      containers:
+        - name: auth
+          image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.auth.port.http }}
+            - containerPort: {{ .Values.auth.port.grpc }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: AUTH_APP_VERSION
+              value: "{{ .Values.auth.image.tag }}"
+            - name: AUTH_PORT
+              value: "{{ .Values.auth.port.http }}"
+            - name: AUTH_GRPC_URL
+              value: "0.0.0.0:{{ .Values.auth.port.grpc }}"
+            - name: AUTH_JWT_SECRET
+              value: "{{ .Values.auth.jwt.secret }}"
+            - name: AUTH_JWT_EXPIRATION_MS
+              value: "{{ .Values.auth.jwt.expirationMs }}"
+            - name: AUTH_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.postgresql.auth.database }}"
+{{- end }}

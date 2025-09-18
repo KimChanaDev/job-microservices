@@ -1,0 +1,36 @@
+{{- if .Values.executor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: executor
+  labels:
+    app: executor
+spec:
+  replicas: {{ .Values.executor.replicas }}
+  selector:
+    matchLabels:
+      app: executor
+  template:
+    metadata:
+      labels:
+        app: executor
+      annotations:
+        timestamp: "{{ now | unixEpoch }}"
+        image-digest: "{{ .Values.executor.image.repository }}:{{ .Values.executor.image.tag }}"
+        {{- if .Values.global.forceUpdate }}
+        force-update: "{{ .Values.global.forceUpdate }}"
+        {{- end }}
+    spec:
+      containers:
+        - name: executor
+          image: {{ .Values.executor.image.repository }}:{{ .Values.executor.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.executor.port.http }}
+          env:
+            {{- include "common.env" . | nindent 12 }}
+            - name: EXECUTOR_PORT
+              value: "{{ .Values.executor.port.http }}"
+            - name: EXECUTOR_APP_VERSION
+              value: "{{ .Values.executor.image.tag }}"
+{{- end }}

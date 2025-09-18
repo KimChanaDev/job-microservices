@@ -1,0 +1,38 @@
+{{- if .Values.jobs.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobs
+  labels:
+    app: jobs
+spec:
+  replicas: {{ .Values.jobs.replicas }}
+  selector:
+    matchLabels:
+      app: jobs
+  template:
+    metadata:
+      labels:
+        app: jobs
+      annotations:
+        timestamp: "{{ now | unixEpoch }}"
+        image-digest: "{{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}"
+        {{- if .Values.global.forceUpdate }}
+        force-update: "{{ .Values.global.forceUpdate }}"
+        {{- end }}
+    spec:
+      containers:
+        - name: jobs
+          image: {{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.jobs.port.http }}
+          env:
+            {{- include "common.env" . | nindent 12 }} 
+            - name: JOBS_PORT
+              value: "{{ .Values.jobs.port.http }}"
+            - name: JOBS_APP_VERSION
+              value: "{{ .Values.jobs.image.tag }}"
+            - name: JOBS_GRPC_URL
+              value: "auth-grpc:{{ .Values.auth.port.grpc }}" 
+{{- end }}
