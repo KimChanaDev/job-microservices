@@ -5,14 +5,19 @@
   "main": "dist/main.js",
   "scripts": {},
   "dependencies": {
+    "@golevelup/nestjs-discovery": "^5.0.0",
     "@graphql-yoga/nestjs": "^3.15.2",
     "@grpc/grpc-js": "^1.13.4",
     "@grpc/proto-loader": "^0.8.0",
     "@nestjs/config": "^4.0.2",
     "graphql-type-json": "^0.3.2",
     "graphql-yoga": "^5.15.2",
+    "http-errors": "^2.0.0",
+    "multer": "^2.0.2",
     "pulsar-client": "^1.14.0",
-    "@golevelup/nestjs-discovery": "^5.0.0",
     "ts-proto": "^2.7.7"
+  },
+  "devDependencies": {
+    "@types/multer": "^2.0.0"
   }
 }

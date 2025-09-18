@@ -6,6 +6,7 @@ import { HealthCheckController } from './controllers/healthcheck.controller';
 import { JobsModule } from './modules/jobs.module';
 import { LoggerModule } from '@app/common';
 import { gqlLoggingPlugin } from '@app/graphql';
+import { UploadsModule } from './modules/uploads.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { gqlLoggingPlugin } from '@app/graphql';
         gqlLoggingPlugin()
       ],
     }),
-    JobsModule
+    JobsModule,
+    UploadsModule
   ],
   controllers: [HealthCheckController],
   providers: [],
