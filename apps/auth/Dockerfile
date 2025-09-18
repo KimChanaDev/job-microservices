@@ -72,5 +72,4 @@ ENV AUTH_APP_VERSION=
 ENV AUTH_DATABASE_URL=
 ENV AUTH_PORT=
 
-ENTRYPOINT ["./entrypoint.sh"]
 CMD ["npm", "run", "start:auth:prod" ]

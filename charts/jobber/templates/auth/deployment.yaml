@@ -21,6 +21,32 @@ spec:
         force-update: "{{ .Values.global.forceUpdate }}"
         {{- end }}
     spec:
+      initContainers:
+        - name: init-auth-db
+          image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          workingDir: /app
+          command: ['sh', '-c']
+          args:
+            - |
+              echo "Waiting for database to be ready..."
+              DB_HOST=$(echo $AUTH_DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
+              DB_PORT=$(echo $AUTH_DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+              DB_USER=$(echo $AUTH_DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+              DB_HOST=${DB_HOST:-postgres}
+              DB_PORT=${DB_PORT:-5432}
+              DB_USER=${DB_USER:-postgres}
+              until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"; do
+                echo "Database is unavailable - sleeping"
+                sleep 2
+              done
+              echo "Database is ready!"
+              echo "Running database migrations..."
+              npx prisma migrate deploy --schema=./prisma/schema.prisma
+              echo "Database migrations completed!"
+          env:
+            - name: AUTH_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.postgresql.auth.database }}"
       containers:
         - name: auth
           image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
