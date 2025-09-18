@@ -1,7 +1,13 @@
-const LOGIN_EMAIL = '';
-const LOGIN_PASSWORD = '';
+console.log('Fibonacci performance test script running...');
+console.log('Arguments: ', process.argv);
 
-const AUTH_API_URL = 'http://localhost:3000/graphql';
+
+const LOGIN_EMAIL = process.argv[2] || '';
+const LOGIN_PASSWORD = process.argv[3] || '';
+const AUTH_API_URL = process.argv[4] || 'http://localhost:3000';
+const JOBS_API_URL = process.argv[5] || 'http://localhost:3001';
+const N =  process.argv[6] || 1000;
+
 const LOGIN_MUTATION = `
     mutation Login($loginInput: LoginInput!) {
         login(loginInput: $loginInput) {
@@ -10,7 +16,6 @@ const LOGIN_MUTATION = `
     }
 `;
 
-const JOBS_API_URL = 'http://localhost:3001/graphql';
 const EXECUTE_JOBS_MUTATION = `
     mutation ExecuteJob($executeJobInput: ExecuteJobInput!) {
         executeJob(executeJobInput: $executeJobInput) {
@@ -20,7 +25,7 @@ const EXECUTE_JOBS_MUTATION = `
 `;
 
 async function login(email, password) {
-  const response = await fetch(AUTH_API_URL, {
+  const response = await fetch(AUTH_API_URL + '/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -35,7 +40,7 @@ async function login(email, password) {
 }
 
 async function executeJobWithInput(executeJobInput, cookies) {
-  const response = await fetch(JOBS_API_URL, {
+  const response = await fetch(JOBS_API_URL + '/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: cookies },
     body: JSON.stringify({
@@ -52,11 +57,10 @@ async function executeJobWithInput(executeJobInput, cookies) {
   console.log('loginData: ', loginData);
   console.log('cookies: ', cookies);
   if (loginData?.data.login.id) {
-    const n = 1000;
-    console.log(`Executing fibonacci with n = ${n}`);
+    console.log(`Executing fibonacci with n = ${N}`);
     const executeJobInput = {
       name: 'Fibonacci',
-      data: Array.from({ length: n }, () => ({
+      data: Array.from({ length: parseInt(N, 10) }, () => ({
         iterations: Math.floor(Math.random() * 5000) + 1,
       })),
     };

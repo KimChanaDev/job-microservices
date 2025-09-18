@@ -28,6 +28,7 @@ export class PulsarClient implements OnModuleDestroy {
   ): Promise<Consumer> {
     const consumer: Consumer = await this.client.subscribe({
       topic,
+      subscriptionType: 'Shared', // default is Exclusive which allows only one consumer per subscription, while Shared allows multiple consumers
       subscription: 'jobber',
       listener,
     });
