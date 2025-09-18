@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { JobsModule } from '../src/modules/jobs/jobs.module';
+import { JobsModule } from '../src/modules/jobs.module';
 
 describe('JobsController (e2e)', () => {
   let app: INestApplication;

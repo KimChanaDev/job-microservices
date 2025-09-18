@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { JobsResolver } from './jobs.resolver';
-import { JobsService } from './jobs.service';
+import { JobsResolver } from '../resolvers/jobs.resolver';
+import { JobsService } from '../services/jobs.service';
 import { AUTH_PACKAGE_NAME } from '@app/grpc';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { DiscoveryModule } from '@golevelup/nestjs-discovery';
 import { PulsarModule } from '@app/pulsar';
-import { FibonacciJob } from '../../jobs/fibonacci/fibonacci.job';
+import { FibonacciJob } from '../jobs/fibonacci/fibonacci.job';
 import { ConfigService } from '@nestjs/config';
 import { getEnvironment, APPNAME } from '@app/common';
 

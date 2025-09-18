@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { YogaDriver, YogaDriverConfig } from '@graphql-yoga/nestjs';
 import { HealthCheckController } from './controllers/healthcheck.controller';
-import { JobsModule } from './modules/jobs/jobs.module';
+import { JobsModule } from './modules/jobs.module';
 import { LoggerModule } from '@app/common';
 import { gqlLoggingPlugin } from '@app/graphql';
 
