@@ -4,8 +4,8 @@ import {
     AuthServiceController, AuthServiceControllerMethods,
     GrpcLoggingInterceptor
 } from '@app/grpc';
-import { UsersService } from '../users/users.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { UsersService } from '../services/users.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { TokenPayload } from '@app/common';
 import { Observable } from 'rxjs';
 

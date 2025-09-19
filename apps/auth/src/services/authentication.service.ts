@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from './users.service';
 import { isProdEnv, TokenPayload } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { LoginInput } from './dto/login.input';
+import { LoginInput } from '../dtos/login.input';
 import { Response } from 'express';
 import { compare } from 'bcryptjs';
 
