@@ -8,6 +8,7 @@ export enum APPNAME {
   Auth = 'auth',
   Jobs = 'jobs',
   Executor = 'executor',
+  Products = 'products'
 }
 
 export function isProdEnv(configService: ConfigService): boolean {
