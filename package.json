@@ -42,11 +42,7 @@
     "start:products": "nest start products --watch",
     "start:products:prod": "node dist/apps/products/main.js",
     "start:dev": "concurrently -n AUTH,JOBS,EXECUTOR,PRODUCTS -c blue,green,yellow,purple \"npm run start:auth\" \"npm run start:jobs\" \"npm run start:executor\" \"npm run start:products\"",
-    "workspace:install": "npm install --workspaces",
-    "workspace:auth": "npm run --workspace=apps/auth",
-    "workspace:jobs": "npm run --workspace=apps/jobs",
-    "workspace:executor": "npm run --workspace=apps/executor",
-    "workspace:products": "npm run --workspace=apps/products"
+    "drizzle-kit:full-migrate": "npm run drizzle-kit:full-migrate --workspace=apps/products"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

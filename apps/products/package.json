@@ -3,11 +3,20 @@
   "version": "0.0.1",
   "description": "Products microservice",
   "main": "dist/main.js",
-  "scripts": {},
+  "scripts": {
+    "drizzle-kit:generate": "npx drizzle-kit generate --config drizzle.config.ts",
+    "drizzle-kit:migrate": "npx drizzle-kit migrate --config drizzle.config.ts",
+    "drizzle-kit:generate-safe": "npm run drizzle-kit:generate && node drizzle/scripts/fix-migrations.mjs",
+    "drizzle-kit:full-migrate": "npm run drizzle-kit:generate-safe && npm run drizzle-kit:migrate"
+  },
   "dependencies": {
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.0.1"
+    "@nestjs/core": "^11.0.1",
+    "drizzle-orm": "^0.44.5",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4"
   }
 }
