@@ -27,7 +27,7 @@
     "test:e2e": "jest --config ./apps/job-microservices/test/jest-e2e.json",
     "prisma:generate": "prisma generate --schema ./apps/auth/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --name users_table --schema ./apps/auth/prisma/schema.prisma",
-    "generate-ts-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./libs/grpc/src/types --ts_proto_opt=nestJs=true --proto_path=./libs/grpc/src/proto auth.proto",
+    "generate-ts-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./libs/grpc/src/types --ts_proto_opt=nestJs=true --ts_proto_opt=exportCommonSymbols=false --proto_path=./libs/grpc/src/proto ./libs/grpc/src/proto/*.proto",
     "build:auth": "nest build auth",
     "build:jobs": "nest build jobs",
     "build:executor": "nest build executor",

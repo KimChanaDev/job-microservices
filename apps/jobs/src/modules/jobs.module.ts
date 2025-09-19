@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JobsResolver } from '../resolvers/jobs.resolver';
 import { JobsService } from '../services/jobs.service';
-import { AUTH_PACKAGE_NAME } from '@app/grpc';
+import { Packages } from '@app/grpc';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { DiscoveryModule } from '@golevelup/nestjs-discovery';
@@ -17,11 +17,11 @@ import { getEnvironment, APPNAME } from '@app/common';
     PulsarModule,
     ClientsModule.registerAsync([
       {
-        name: AUTH_PACKAGE_NAME,
+        name: Packages.AUTH,
         useFactory: (configService: ConfigService) => ({
           transport: Transport.GRPC,
           options: {
-            package: AUTH_PACKAGE_NAME,
+            package: Packages.AUTH,
             protoPath: join(__dirname, 'proto/auth.proto'),
             url: configService.get(getEnvironment('GRPC_URL', APPNAME.Jobs)) || 'localhost:5000',
           },

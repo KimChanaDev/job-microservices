@@ -1,6 +1,6 @@
 import { OnModuleInit, CanActivate, ExecutionContext, Injectable, Inject, Logger, } from '@nestjs/common';
 import { catchError, map, Observable, of } from 'rxjs';
-import { AUTH_PACKAGE_NAME, AUTH_SERVICE_NAME, AuthServiceClient } from '@app/grpc';
+import { Packages, AUTH_SERVICE_NAME, AuthServiceClient } from '@app/grpc';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
@@ -9,7 +9,7 @@ export class GqlAuthGuardForExternalService implements CanActivate, OnModuleInit
   private readonly logger = new Logger(GqlAuthGuardForExternalService.name);
   private authService!: AuthServiceClient;
 
-  constructor(@Inject(AUTH_PACKAGE_NAME) private readonly client: ClientGrpc) { }
+  constructor(@Inject(Packages.AUTH) private readonly client: ClientGrpc) { }
 
   onModuleInit() {
     this.authService =

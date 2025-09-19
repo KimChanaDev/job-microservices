@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AuthAppModule } from './auth-app.module';
 import { APPNAME, getEnvironment, init } from '@app/common';
 import { GrpcOptions, Transport } from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME } from '@app/grpc';
+import { Packages } from '@app/grpc';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import { GraphQLExceptionFilter } from '@app/graphql';
@@ -14,7 +14,7 @@ async function bootstrap() {
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
     options: {
-      package: AUTH_PACKAGE_NAME,
+      package: Packages.AUTH,
       protoPath: join(__dirname, 'proto/auth.proto'),
       url: app.get(ConfigService).get(getEnvironment('GRPC_URL', APPNAME.Auth)) || '0.0.0.0:5000',
     },

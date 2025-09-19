@@ -87,7 +87,11 @@
       "entryFile": "main",
       "sourceRoot": "apps/products/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/products/tsconfig.app.json"
+        "tsConfigPath": "apps/products/tsconfig.app.json",
+        "assets": [
+          "../../../libs/grpc/src/proto/*.proto"
+        ],
+        "watchAssets": false
       }
     },
     "pulsar": {
