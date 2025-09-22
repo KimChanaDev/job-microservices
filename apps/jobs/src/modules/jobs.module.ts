@@ -9,6 +9,7 @@ import { PulsarModule } from '@app/pulsar';
 import { FibonacciJob } from '../jobs/fibonacci/fibonacci.job';
 import { ConfigService } from '@nestjs/config';
 import { getEnvironment, APPNAME } from '@app/common';
+import { LoadProductsJob } from '../jobs/products/load-products.job';
 
 
 @Module({
@@ -31,6 +32,6 @@ import { getEnvironment, APPNAME } from '@app/common';
     ]),
   ],
   controllers: [],
-  providers: [FibonacciJob, JobsService, JobsResolver],
+  providers: [FibonacciJob, JobsService, JobsResolver, LoadProductsJob],
 })
 export class JobsModule { }

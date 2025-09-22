@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs';
 import { UPLOAD_FILE_PATH } from '../consts/upload.const';
 import { FileUploadResponseDto } from '../dtos/file-upload.dto';
-import createHttpError from 'http-errors';
+import { InternalServerErrorException } from '@app/common';
 
 @Injectable()
 export class UploadsService {
@@ -27,7 +27,7 @@ export class UploadsService {
         } catch (error: unknown) {
             this.logger.error('Error in saveFileInfo:', error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-            throw createHttpError(500, errorMessage);
+            throw new InternalServerErrorException(errorMessage);
         }
     }
 }

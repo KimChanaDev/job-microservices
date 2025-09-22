@@ -4,3 +4,4 @@ export * from './interfaces/token-payload.interface';
 export * from './serialize';
 export * from './modules/logger.module';
 export * from './enum';
+export * from './errors/exceptions';

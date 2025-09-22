@@ -5,7 +5,7 @@ import { extname } from "path";
 import { UPLOAD_FILE_PATH } from "../consts/upload.const";
 import { FileUploadResponseDto } from "../dtos/file-upload.dto";
 import { UploadsService } from "../services/uploads.service";
-import createError from 'http-errors';
+import { BadRequestException } from "@app/common";
 
 @Controller("uploads")
 export class UploadsController {
@@ -30,7 +30,7 @@ export class UploadsController {
                 if (isAllowed) {
                     callback(null, true);
                 } else {
-                    callback(createError(400, 'Only JSON files are allowed.'), false);
+                    callback(new BadRequestException('Only JSON files are allowed.'), false);
                 }
             }
         })

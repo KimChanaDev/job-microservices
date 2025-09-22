@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, OnModuleInit, } from '@nestjs/common';
+import { Injectable, OnModuleInit, } from '@nestjs/common';
 import { DiscoveredClassWithMeta, DiscoveryService, } from '@golevelup/nestjs-discovery';
 import { JOB_METADATA_KEY } from '../decorators/job.decorator';
 import { JobMetadata } from '../interfaces/job-metadata.interface';
 import { AbstractJob } from '../jobs/abstract.job';
+import { BadRequestException, InternalServerErrorException } from '@app/common';
 
 
 @Injectable()

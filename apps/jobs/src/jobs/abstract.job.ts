@@ -3,7 +3,7 @@ import { PulsarClient } from '@app/pulsar';
 import { serialize } from '@app/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException } from '@app/common';
 
 export abstract class AbstractJob<T extends object> {
   private producer: Producer | undefined;

@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { isProdEnv, TokenPayload } from '@app/common';
+import { isProdEnv, TokenPayload, UnauthorizedException } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from '../dtos/login.input';
