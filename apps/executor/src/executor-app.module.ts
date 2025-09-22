@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { JobsModule } from './jobs/jobs.module';
+import { JobsModule } from './modules/jobs.module';
 import { HealthCheckController } from './controllers/healthcheck.controller';
 import { LoggerModule } from '@app/common';
 
