@@ -1,4 +1,4 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Client, Consumer, Message, Producer } from 'pulsar-client';
 import { ConfigService } from '@nestjs/config';
 
@@ -7,6 +7,7 @@ export class PulsarClient implements OnModuleDestroy {
   private readonly client: Client;
   private readonly producers: Producer[] = [];
   private readonly consumers: Consumer[] = [];
+  private readonly logger = new Logger(PulsarClient.name);
 
   constructor(private readonly configService: ConfigService) {
     this.client = new Client({
@@ -27,16 +28,26 @@ export class PulsarClient implements OnModuleDestroy {
     topic: string,
     listener: (message: Message) => void
   ): Promise<Consumer> {
-    const consumer: Consumer = await this.client.subscribe({
-      topic,
-      subscriptionType: 'Shared', // default is Exclusive which allows only one consumer per subscription, while Shared allows multiple consumers
-      subscription: `jobber-${topic}`, // Use unique subscription name per topic
-      listener,
-      // receiverQueueSize: 1000, // Allow multiple messages to be buffered
-      // ackTimeoutMs: 30000, // 30 seconds acknowledgment timeout
-    });
-    this.consumers.push(consumer);
-    return consumer;
+    let isSuccess = false;
+    let consumer: Consumer;
+    while (!isSuccess) {
+      try {
+        consumer = await this.client.subscribe({
+          topic,
+          subscriptionType: 'Shared', // default is Exclusive which allows only one consumer per subscription, while Shared allows multiple consumers
+          subscription: `jobber-${topic}`, // Use unique subscription name per topic
+          listener,
+          // receiverQueueSize: 1000, // Allow multiple messages to be buffered
+          // ackTimeoutMs: 30000, // 30 seconds acknowledgment timeout
+        });
+        isSuccess = true;
+      } catch (error) {
+        this.logger.error('Error creating consumer:', error);
+        await new Promise(res => setTimeout(res, 10000)); // Wait for 10 seconds before retrying
+      }
+    }
+    this.consumers.push(consumer!);
+    return consumer!;
   }
 
   async onModuleDestroy() {

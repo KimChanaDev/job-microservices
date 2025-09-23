@@ -4,10 +4,11 @@
   "description": "Products microservice",
   "main": "dist/main.js",
   "scripts": {
-    "drizzle-kit:generate": "npx drizzle-kit generate --config drizzle.config.ts",
+    "drizzle-kit:generate": "npx drizzle-kit generate --config drizzle.config.ts --name=%MIGRATION_NAME% && node drizzle/scripts/fix-migrations.mjs",
     "drizzle-kit:migrate": "npx drizzle-kit migrate --config drizzle.config.ts",
-    "drizzle-kit:generate-safe": "npm run drizzle-kit:generate && node drizzle/scripts/fix-migrations.mjs",
-    "drizzle-kit:full-migrate": "npm run drizzle-kit:generate-safe && npm run drizzle-kit:migrate"
+    "drizzle-kit:full-migrate": "npx drizzle-kit generate --config drizzle.config.ts --name=%MIGRATION_NAME% && node drizzle/scripts/fix-migrations.mjs && npx drizzle-kit migrate --config drizzle.config.ts",
+    "drizzle-kit:custom": "npx drizzle-kit generate --custom --name",
+    "_example(drizzle-kit:custom)": "npm run drizzle-kit:custom --workspace='apps/products' -- seed-categories"
   },
   "dependencies": {
     "@nestjs/config": "^4.0.2",

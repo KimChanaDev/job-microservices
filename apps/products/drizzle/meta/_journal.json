@@ -5,8 +5,29 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1758274867713,
-      "tag": "0000_neat_logan",
+      "when": 1758604293915,
+      "tag": "20250923051133_create-product-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1758604737353,
+      "tag": "20250923051857_create_categories_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758605057677,
+      "tag": "20250923052417_seed-categories",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758605670022,
+      "tag": "20250923053430_alter_table_products_price_column",
       "breakpoints": true
     }
   ]
