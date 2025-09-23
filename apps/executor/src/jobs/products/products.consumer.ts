@@ -1,14 +1,24 @@
 import { LoadProductsMessage, PulsarClient, PulsarConsumer } from '@app/pulsar';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Jobs } from '@app/common';
+import { Packages, PRODUCTS_SERVICE_NAME, ProductsServiceClient } from '@app/grpc';
+import type { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class ProductsConsumer extends PulsarConsumer<LoadProductsMessage> {
-  constructor(pulsarClient: PulsarClient) { super(pulsarClient, Jobs.LOAD_PRODUCTS); }
+export class ProductsConsumer extends PulsarConsumer<LoadProductsMessage> implements OnModuleInit {
+  private productsService!: ProductsServiceClient;
+
+  constructor(pulsarClient: PulsarClient, @Inject(Packages.PRODUCTS) private client: ClientGrpc) {
+    super(pulsarClient, Jobs.LOAD_PRODUCTS);
+  }
+
+  async onModuleInit() {
+    this.productsService = this.client.getService<ProductsServiceClient>(PRODUCTS_SERVICE_NAME);
+    await super.onModuleInit();
+  }
 
   protected async onMessage(message: LoadProductsMessage) {
-    console.log(message);
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    console.log('Done processing product job');
+    await firstValueFrom(this.productsService.createProduct(message));
   }
 }

@@ -1,9 +1,29 @@
 import { Module } from '@nestjs/common';
 import { PulsarModule } from '@app/pulsar';
 import { ProductsConsumer } from '../jobs/products/products.consumer';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { Packages } from '@app/grpc';
+import { ConfigService } from '@nestjs/config';
+import { join } from 'path';
+import { APPNAME, getEnvironment } from '@app/common';
 
 @Module({
-    imports: [PulsarModule],
+    imports: [
+        PulsarModule,
+        ClientsModule.registerAsync([
+            {
+                name: Packages.PRODUCTS,
+                useFactory: (configService: ConfigService) => ({
+                    transport: Transport.GRPC,
+                    options: {
+                        package: Packages.PRODUCTS,
+                        protoPath: join(__dirname, 'proto/products.proto'),
+                        url: configService.get(getEnvironment('GRPC_URL', APPNAME.Products)) || 'localhost:5000',
+                    },
+                }),
+                inject: [ConfigService],
+            }])
+    ],
     providers: [ProductsConsumer],
 })
 export class ProductsModule { }

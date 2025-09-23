@@ -32,8 +32,8 @@ export class PulsarClient implements OnModuleDestroy {
       subscriptionType: 'Shared', // default is Exclusive which allows only one consumer per subscription, while Shared allows multiple consumers
       subscription: `jobber-${topic}`, // Use unique subscription name per topic
       listener,
-      receiverQueueSize: 1000, // Allow multiple messages to be buffered
-      ackTimeoutMs: 30000, // 30 seconds acknowledgment timeout
+      // receiverQueueSize: 1000, // Allow multiple messages to be buffered
+      // ackTimeoutMs: 30000, // 30 seconds acknowledgment timeout
     });
     this.consumers.push(consumer);
     return consumer;

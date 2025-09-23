@@ -38,7 +38,11 @@
       "entryFile": "main",
       "sourceRoot": "apps/executor/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/executor/tsconfig.app.json"
+        "tsConfigPath": "apps/executor/tsconfig.app.json",
+        "assets": [
+          "../../../libs/grpc/src/proto/*.proto"
+        ],
+        "watchAssets": false
       }
     },
     "graphql": {

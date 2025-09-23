@@ -19,19 +19,16 @@ export abstract class PulsarConsumer<T> implements OnModuleInit {
     );
   }
 
-  private listener(message: Message) {
-    // Process message asynchronously without blocking the listener
-    Promise.resolve().then(async () => {
-      try {
-        const data = deserialize<T>(message.getData());
-        this.logger.debug('Receive message: ', JSON.stringify(data));
-        await this.onMessage(data);
-      } catch (error) {
-        this.logger.error(error);
-      } finally {
-        this.consumer.acknowledge(message);
-      }
-    });
+  private async listener(message: Message) {
+    try {
+      const data = deserialize<T>(message.getData());
+      this.logger.debug('Receive message: ', JSON.stringify(data));
+      await this.onMessage(data);
+    } catch (error) {
+      this.logger.error(error);
+    } finally {
+      this.consumer.acknowledge(message);
+    }
   }
 
   protected abstract onMessage(data: T): Promise<void>;
