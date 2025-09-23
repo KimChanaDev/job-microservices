@@ -51,6 +51,9 @@ RUN npm install --workspace=apps/products \
     --omit=dev && \
     npm cache clean --force
 
+COPY apps/products/drizzle.config.ts ./apps/products/drizzle.config.ts
+COPY apps/products/drizzle ./apps/products/drizzle
+
 COPY --from=builder /workspace/dist ./dist
 
 ENV NODE_ENV=

@@ -50,9 +50,9 @@ RUN npm install --workspace=apps/executor \
 COPY --from=builder /workspace/dist ./dist
 
 ENV NODE_ENV=
-ENV PULSAR_SERVICE_URL=
 ENV EXECUTOR_APP_VERSION=
 ENV EXECUTOR_PORT=
+ENV PULSAR_SERVICE_URL=
 ENV PRODUCTS_GRPC_URL=
 
 CMD ["npm", "run", "start:executor:prod" ]

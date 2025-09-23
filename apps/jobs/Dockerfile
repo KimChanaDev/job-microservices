@@ -62,8 +62,9 @@ RUN npm install --workspace=apps/jobs \
 COPY --from=builder /workspace/dist ./dist
 
 ENV NODE_ENV=
-ENV PULSAR_SERVICE_URL=
 ENV JOBS_APP_VERSION=
 ENV JOBS_PORT=
+ENV PULSAR_SERVICE_URL=
+ENV AUTH_GRPC_URL=
 
 CMD ["npm", "run", "start:jobs:prod" ]

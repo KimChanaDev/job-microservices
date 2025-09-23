@@ -5,7 +5,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Packages } from '@app/grpc';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { APPNAME, getEnvironment } from '@app/common';
 
 @Module({
     imports: [
@@ -18,7 +17,7 @@ import { APPNAME, getEnvironment } from '@app/common';
                     options: {
                         package: Packages.PRODUCTS,
                         protoPath: join(__dirname, 'proto/products.proto'),
-                        url: configService.get(getEnvironment('GRPC_URL', APPNAME.Products)) || 'localhost:5000',
+                        url: configService.get('PRODUCTS_GRPC_URL') || 'localhost:5000',
                     },
                 }),
                 inject: [ConfigService],

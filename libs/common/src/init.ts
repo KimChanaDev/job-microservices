@@ -1,10 +1,10 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import { APPNAME, getEnvironment, isProdEnv } from './environment.config';
+import { isProdEnv } from './environment.config';
 import { Logger } from 'nestjs-pino'
 
-export async function init(app: INestApplication, appName: APPNAME) {
+export async function init(app: INestApplication, portEnv: string) {
   const globalPrefix = 'api';
   // Configure global validation pipe with security and error handling settings
   const configService = app.get(ConfigService);
@@ -21,7 +21,7 @@ export async function init(app: INestApplication, appName: APPNAME) {
   app.setGlobalPrefix(globalPrefix);
   app.useLogger(app.get(Logger));
   app.use(cookieParser());
-  const port = configService.getOrThrow(getEnvironment('PORT', appName));
+  const port = configService.getOrThrow(portEnv);
   await app.listen(port);
   app.get(Logger).log(`Application is running on: http://localhost:${port}/${globalPrefix}/healthcheck`);
 }

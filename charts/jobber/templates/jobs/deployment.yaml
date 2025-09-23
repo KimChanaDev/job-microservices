@@ -33,6 +33,6 @@ spec:
               value: "{{ .Values.jobs.port.http }}"
             - name: JOBS_APP_VERSION
               value: "{{ .Values.jobs.image.tag }}"
-            - name: JOBS_GRPC_URL
+            - name: AUTH_GRPC_URL
               value: "auth-grpc:{{ .Values.auth.port.grpc }}" 
 {{- end }}

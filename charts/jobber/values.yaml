@@ -1,6 +1,7 @@
 global:
   imagePullPolicy: Always
-  forceUpdate: ""
+  forceUpdate: ''
+  nodeEnv: staging
 
 pulsar:
   namespace: pulsar
@@ -39,7 +40,12 @@ postgresql:
   auth:
     username: postgres
     password: postgres
-    database: jobber
+  primary:
+    initdb:
+      scripts:
+        create-dbs.sql: |
+          CREATE DATABASE auth;
+          CREATE DATABASE products;
 
 auth:
   enabled: true
@@ -52,7 +58,9 @@ auth:
     grpc: 5000
   jwt:
     secret: YxD1NH9ox4zu81AoiTEng10kVgPOYIhf
-    expirationMs: "2880000"
+    expirationMs: '2880000'
+  database:
+    name: auth
 
 jobs:
   enabled: true
@@ -71,3 +79,15 @@ executor:
     tag: latest
   port:
     http: 3002
+
+products:
+  enabled: true
+  replicas: 1
+  image:
+    repository: 028767427893.dkr.ecr.us-east-1.amazonaws.com/jobber/products
+    tag: latest
+  port:
+    http: 3003
+    grpc: 5001
+  database:
+    name: products

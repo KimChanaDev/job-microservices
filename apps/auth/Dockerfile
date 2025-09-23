@@ -66,10 +66,11 @@ COPY --from=builder /workspace/apps/auth/entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
 ENV NODE_ENV=
+ENV AUTH_APP_VERSION=
+ENV AUTH_PORT=
 ENV AUTH_JWT_SECRET=
 ENV AUTH_JWT_EXPIRATION_MS=
-ENV AUTH_APP_VERSION=
 ENV AUTH_DATABASE_URL=
-ENV AUTH_PORT=
+ENV AUTH_GRPC_URL=
 
 CMD ["npm", "run", "start:auth:prod" ]

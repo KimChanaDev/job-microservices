@@ -1,0 +1,67 @@
+{{- if .Values.products.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products
+  labels:
+    app: products
+spec:
+  replicas: {{ .Values.products.replicas }}
+  selector:
+    matchLabels:
+      app: products
+  template:
+    metadata:
+      labels:
+        app: products
+      annotations:
+        timestamp: "{{ now | unixEpoch }}"
+        image-digest: "{{ .Values.products.image.repository }}:{{ .Values.products.image.tag }}"
+        {{- if .Values.global.forceUpdate }}
+        force-update: "{{ .Values.global.forceUpdate }}"
+        {{- end }}
+    spec:
+      initContainers:
+        - name: drizzle-migrate
+          image: {{ .Values.products.image.repository }}:{{ .Values.products.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          workingDir: /app
+          command: ['sh', '-c']
+          args:
+            - |
+              echo "Waiting for database to be ready..."
+              DB_HOST=$(echo $PRODUCTS_DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
+              DB_PORT=$(echo $PRODUCTS_DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+              DB_USER=$(echo $PRODUCTS_DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+              DB_HOST=${DB_HOST:-postgres}
+              DB_PORT=${DB_PORT:-5432}
+              DB_USER=${DB_USER:-postgres}
+              until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"; do
+                echo "Database is unavailable - sleeping"
+                sleep 2
+              done
+              echo "Database is ready!"
+              echo "Running database migrations..."
+              npm run drizzle-kit:migrate
+              echo "Database migrations completed!"
+          env:
+            - name: PRODUCTS_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.products.database.name }}"
+      containers:
+        - name: products
+          image: {{ .Values.products.image.repository }}:{{ .Values.products.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.products.port.http }}
+            - containerPort: {{ .Values.products.port.grpc }}
+          env:
+            {{- include "common.env" . | nindent 12 }} 
+            - name: PRODUCTS_PORT
+              value: "{{ .Values.products.port.http }}"
+            - name: PRODUCTS_APP_VERSION
+              value: "{{ .Values.products.image.tag }}"
+            - name: PRODUCTS_GRPC_URL
+              value: "0.0.0.0:{{ .Values.products.port.grpc }}"
+            - name: PRODUCTS_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.products.database.name }}"
+{{- end }}

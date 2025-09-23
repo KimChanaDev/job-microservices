@@ -1,4 +1,3 @@
-import { APPNAME, getEnvironment } from '@app/common';
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -12,7 +11,7 @@ export class HealthCheckController {
             status: 'ok',
             timestamp: new Date().toISOString(),
             service: 'auth-service',
-            version: this.configService.getOrThrow(getEnvironment("APP_VERSION", APPNAME.Auth)),
+            version: this.configService.getOrThrow("AUTH_APP_VERSION"),
         };
     }
 }

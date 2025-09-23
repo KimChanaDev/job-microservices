@@ -8,7 +8,6 @@ import { DiscoveryModule } from '@golevelup/nestjs-discovery';
 import { PulsarModule } from '@app/pulsar';
 import { FibonacciJob } from '../jobs/fibonacci/fibonacci.job';
 import { ConfigService } from '@nestjs/config';
-import { getEnvironment, APPNAME } from '@app/common';
 import { LoadProductsJob } from '../jobs/products/load-products.job';
 
 
@@ -24,7 +23,7 @@ import { LoadProductsJob } from '../jobs/products/load-products.job';
           options: {
             package: Packages.AUTH,
             protoPath: join(__dirname, 'proto/auth.proto'),
-            url: configService.get(getEnvironment('GRPC_URL', APPNAME.Jobs)) || 'localhost:5000',
+            url: configService.get("AUTH_GRPC_URL") || 'localhost:5000',
           },
         }),
         inject: [ConfigService],

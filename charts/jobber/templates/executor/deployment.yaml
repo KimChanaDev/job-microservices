@@ -33,4 +33,6 @@ spec:
               value: "{{ .Values.executor.port.http }}"
             - name: EXECUTOR_APP_VERSION
               value: "{{ .Values.executor.image.tag }}"
+            - name: PRODUCTS_GRPC_URL
+              value: "products-grpc:{{ .Values.products.port.grpc }}"
 {{- end }}

@@ -22,7 +22,7 @@ spec:
         {{- end }}
     spec:
       initContainers:
-        - name: init-auth-db
+        - name: prisma-migrate
           image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           workingDir: /app
@@ -46,7 +46,7 @@ spec:
               echo "Database migrations completed!"
           env:
             - name: AUTH_DATABASE_URL
-              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.postgresql.auth.database }}"
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.auth.database.name }}"
       containers:
         - name: auth
           image: {{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}
@@ -67,5 +67,5 @@ spec:
             - name: AUTH_JWT_EXPIRATION_MS
               value: "{{ .Values.auth.jwt.expirationMs }}"
             - name: AUTH_DATABASE_URL
-              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.postgresql.auth.database }}"
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.auth.database.name }}"
 {{- end }}
