@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY package*.json ./
 COPY apps/executor/package*.json ./apps/executor/
 COPY libs/common/package*.json ./libs/common/
+COPY libs/grpc/package*.json ./libs/grpc/
 COPY libs/pulsar/package*.json ./libs/pulsar/
 RUN npm install
 
@@ -19,6 +20,7 @@ COPY nest-cli.json ./
 
 COPY apps/executor ./apps/executor
 COPY libs/common ./libs/common
+COPY libs/grpc ./libs/grpc
 COPY libs/pulsar ./libs/pulsar
 
 RUN npm run build:executor
@@ -36,10 +38,12 @@ RUN apt-get update && apt-get install -y \
 COPY package*.json ./
 COPY apps/executor/package*.json ./apps/executor/
 COPY libs/common/package*.json ./libs/common/
+COPY libs/grpc/package*.json ./libs/grpc/
 COPY libs/pulsar/package*.json ./libs/pulsar/
 RUN npm install --workspace=apps/executor \
     --workspace=libs/pulsar \
     --workspace=libs/common \
+    --workspace=libs/grpc \
     --omit=dev && \
     npm cache clean --force
 
@@ -49,5 +53,6 @@ ENV NODE_ENV=
 ENV PULSAR_SERVICE_URL=
 ENV EXECUTOR_APP_VERSION=
 ENV EXECUTOR_PORT=
+ENV PRODUCTS_GRPC_URL=
 
 CMD ["npm", "run", "start:executor:prod" ]

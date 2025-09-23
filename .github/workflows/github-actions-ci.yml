@@ -42,7 +42,8 @@ jobs:
           IMAGES=(
             "auth apps/auth/Dockerfile"
             "jobs apps/jobs/Dockerfile"
-            "executor apps/executor/Dockerfile" 
+            "executor apps/executor/Dockerfile"
+            "products apps/products/Dockerfile"
           )
           for IMAGE in "${IMAGES[@]}"; do
             IMAGE_NAME=$(echo $IMAGE | cut -d' ' -f1)
