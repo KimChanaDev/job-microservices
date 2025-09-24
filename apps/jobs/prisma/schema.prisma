@@ -1,0 +1,22 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../../../node_modules/@prisma/client/jobs"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("JOBS_DATABASE_URL")
+    schemas  = ["jobs"]
+}
+
+model jobs {
+    id        Int       @id @default(autoincrement())
+    name      String
+    size      Int
+    completed Int
+    status    String
+    startedAt DateTime  @default(now())
+    endedAt   DateTime?
+
+    @@schema("jobs")
+}

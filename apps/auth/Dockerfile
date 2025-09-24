@@ -28,7 +28,7 @@ COPY libs/graphql ./libs/graphql
 COPY libs/grpc ./libs/grpc
 COPY libs/prisma ./libs/prisma
 
-RUN npm run prisma:generate
+RUN npm run prisma:generate:auth
 RUN npm run generate-ts-proto
 RUN npm run build:auth
 

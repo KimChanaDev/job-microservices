@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Jobs microservice",
   "main": "dist/main.js",
-  "scripts": {},
+  "scripts": {
+    "prisma:generate": "dotenv -e ../../.env -- prisma generate --schema ./prisma/schema.prisma",
+    "prisma:migrate": "dotenv -e ../../.env -- prisma migrate dev --name jobs_table --schema ./prisma/schema.prisma"
+  },
   "dependencies": {
     "@golevelup/nestjs-discovery": "^5.0.0",
     "@graphql-yoga/nestjs": "^3.15.2",

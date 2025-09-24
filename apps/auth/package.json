@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Authentication microservice",
   "main": "dist/main.js",
-  "scripts": {},
+  "scripts": {
+    "prisma:generate": "dotenv -e ../../.env -- prisma generate --schema ./prisma/schema.prisma",
+    "prisma:migrate": "dotenv -e ../../.env -- prisma migrate dev --name users_table --schema ./prisma/schema.prisma"
+  },
   "dependencies": {
     "@graphql-yoga/nestjs": "^3.15.2",
     "@nestjs/config": "^4.0.2",
