@@ -2,6 +2,7 @@ import { Jobs } from "@app/common";
 import { JobDecorator } from "../../decorators/job.decorator";
 import { AbstractJob } from "../abstract.job";
 import { LoadProductsMessage, PulsarClient } from "@app/pulsar";
+import { JobsPrismaService } from "@app/prisma";
 
 @JobDecorator({
     name: Jobs.LOAD_PRODUCTS,
@@ -10,7 +11,7 @@ import { LoadProductsMessage, PulsarClient } from "@app/pulsar";
 export class LoadProductsJob extends AbstractJob<LoadProductsMessage> {
     protected messageClass = LoadProductsMessage;
 
-    constructor(pulsarClient: PulsarClient) {
-        super(pulsarClient);
+    constructor(pulsarClient: PulsarClient, jobsPrismaService: JobsPrismaService) {
+        super(pulsarClient, jobsPrismaService);
     }
 }

@@ -3,6 +3,7 @@ import { JobDecorator } from '../../decorators/job.decorator';
 import { AbstractJob } from '../abstract.job';
 import { FibonacciMessage } from '@app/pulsar';
 import { Jobs } from '@app/common';
+import { JobsPrismaService } from '@app/prisma';
 
 @JobDecorator({
   name: Jobs.FIBONACCI,
@@ -11,7 +12,7 @@ import { Jobs } from '@app/common';
 export class FibonacciJob extends AbstractJob<FibonacciMessage> {
   protected messageClass = FibonacciMessage;
 
-  constructor(pulsarClient: PulsarClient) {
-    super(pulsarClient);
+  constructor(pulsarClient: PulsarClient, jobsPrismaService: JobsPrismaService) {
+    super(pulsarClient, jobsPrismaService);
   }
 }

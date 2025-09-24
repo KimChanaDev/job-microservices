@@ -9,6 +9,7 @@ import { PulsarModule } from '@app/pulsar';
 import { FibonacciJob } from '../jobs/fibonacci/fibonacci.job';
 import { ConfigService } from '@nestjs/config';
 import { LoadProductsJob } from '../jobs/products/load-products.job';
+import { JobsPrismaModule } from '@app/prisma';
 
 
 @Module({
@@ -29,6 +30,7 @@ import { LoadProductsJob } from '../jobs/products/load-products.job';
         inject: [ConfigService],
       },
     ]),
+    JobsPrismaModule
   ],
   controllers: [],
   providers: [FibonacciJob, JobsService, JobsResolver, LoadProductsJob],

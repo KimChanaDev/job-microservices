@@ -7,6 +7,7 @@ import { JobsModule } from './modules/jobs.module';
 import { LoggerModule } from '@app/common';
 import { gqlLoggingPlugin } from '@app/graphql';
 import { UploadsModule } from './modules/uploads.module';
+import { JobsPrismaModule } from '@app/prisma';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { UploadsModule } from './modules/uploads.module';
       ],
     }),
     JobsModule,
-    UploadsModule
+    UploadsModule,
+    JobsPrismaModule
   ],
   controllers: [HealthCheckController],
   providers: [],
