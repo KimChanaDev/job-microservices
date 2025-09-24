@@ -1,4 +1,4 @@
-import { PrismaService } from '@app/prisma';
+import { AuthPrismaService } from '@app/prisma';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client/auth/index.js';
 import { hash } from 'bcryptjs';
@@ -6,10 +6,10 @@ import { hash } from 'bcryptjs';
 @Injectable()
 export class UsersService {
 
-    constructor(private readonly prismaService: PrismaService) { }
+    constructor(private readonly prismaService: AuthPrismaService) { }
 
-    async createUser(userData: Prisma.UserCreateInput) {
-        const user = await this.prismaService.user.create({
+    async createUser(userData: Prisma.usersCreateInput) {
+        const user = await this.prismaService.users.create({
             data: {
                 ...userData,
                 password: await hash(userData.password, 10),
@@ -19,11 +19,11 @@ export class UsersService {
     }
 
     async getUsers() {
-        return this.prismaService.user.findMany();
+        return this.prismaService.users.findMany();
     }
 
-    async getUser(args: Prisma.UserWhereUniqueInput) {
-        return this.prismaService.user.findUniqueOrThrow({
+    async getUser(args: Prisma.usersWhereUniqueInput) {
+        return this.prismaService.users.findUniqueOrThrow({
             where: args,
         });
     }
