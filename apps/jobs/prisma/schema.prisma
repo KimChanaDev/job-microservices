@@ -15,8 +15,8 @@ model jobs {
     size      Int
     completed Int
     status    String
-    startedAt DateTime  @default(now())
-    endedAt   DateTime?
+    startedAt DateTime  @default(now()) @db.Timestamptz
+    endedAt   DateTime? @db.Timestamptz
 
     @@schema("jobs")
 }
