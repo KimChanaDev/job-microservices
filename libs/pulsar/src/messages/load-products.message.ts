@@ -1,6 +1,7 @@
 import { IsInt, IsNotEmpty, IsNumber, IsString, Max, Min } from "class-validator";
+import { JobMessage } from "./job-message";
 
-export class LoadProductsMessage {
+export class LoadProductsMessage extends JobMessage {
     @IsString()
     @IsNotEmpty()
     name!: string;
