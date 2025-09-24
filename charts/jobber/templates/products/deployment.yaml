@@ -42,7 +42,7 @@ spec:
               done
               echo "Database is ready!"
               echo "Running database migrations..."
-              npm run drizzle-kit:migrate
+              npm run drizzle-kit:migrate:prod
               echo "Database migrations completed!"
           env:
             - name: PRODUCTS_DATABASE_URL

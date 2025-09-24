@@ -46,6 +46,7 @@ postgresql:
         create-dbs.sql: |
           CREATE DATABASE auth;
           CREATE DATABASE products;
+          CREATE DATABASE jobs;
 
 auth:
   enabled: true
@@ -70,6 +71,9 @@ jobs:
     tag: latest
   port:
     http: 3001
+    grpc: 5002
+  database:
+    name: jobs
 
 executor:
   enabled: true

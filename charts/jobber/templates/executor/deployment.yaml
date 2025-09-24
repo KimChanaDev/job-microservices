@@ -35,4 +35,6 @@ spec:
               value: "{{ .Values.executor.image.tag }}"
             - name: PRODUCTS_GRPC_URL
               value: "products-grpc:{{ .Values.products.port.grpc }}"
+            - name: JOBS_GRPC_URL
+              value: "jobs-grpc:{{ .Values.jobs.port.grpc }}"
 {{- end }}

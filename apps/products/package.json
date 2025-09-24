@@ -6,6 +6,7 @@
   "scripts": {
     "drizzle-kit:generate": "dotenv -e ../../.env -- npx drizzle-kit generate --config drizzle.config.ts --name=%MIGRATION_NAME% && node drizzle/scripts/fix-migrations.mjs",
     "drizzle-kit:migrate": "dotenv -e ../../.env -- npx drizzle-kit migrate --config drizzle.config.ts",
+    "drizzle-kit:migrate:prod": "npx drizzle-kit migrate --config drizzle.config.ts",
     "drizzle-kit:full-migrate": "dotenv -e ../../.env -- npx drizzle-kit generate --config drizzle.config.ts --name=%MIGRATION_NAME% && node drizzle/scripts/fix-migrations.mjs && dotenv -e ../../.env -- npx drizzle-kit migrate --config drizzle.config.ts",
     "drizzle-kit:custom": "npx drizzle-kit generate --custom --name",
     "_example(drizzle-kit:custom)": "npm run drizzle-kit:custom --workspace='apps/products' -- seed-categories"

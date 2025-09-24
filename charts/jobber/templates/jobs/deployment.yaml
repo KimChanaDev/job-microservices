@@ -21,6 +21,32 @@ spec:
         force-update: "{{ .Values.global.forceUpdate }}"
         {{- end }}
     spec:
+      initContainers:
+        - name: prisma-migrate
+          image: {{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          workingDir: /app
+          command: ['sh', '-c']
+          args:
+            - |
+              echo "Waiting for database to be ready..."
+              DB_HOST=$(echo $JOBS_DATABASE_URL | sed -n 's/.*@\([^:]*\):.*/\1/p')
+              DB_PORT=$(echo $JOBS_DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+              DB_USER=$(echo $JOBS_DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+              DB_HOST=${DB_HOST:-postgres}
+              DB_PORT=${DB_PORT:-5432}
+              DB_USER=${DB_USER:-postgres}
+              until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"; do
+                echo "Database is unavailable - sleeping"
+                sleep 2
+              done
+              echo "Database is ready!"
+              echo "Running database migrations..."
+              npx prisma migrate deploy --schema=./prisma/schema.prisma
+              echo "Database migrations completed!"
+          env:
+            - name: JOBS_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.jobs.database.name }}"
       containers:
         - name: jobs
           image: {{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}
@@ -38,6 +64,10 @@ spec:
               value: "{{ .Values.jobs.image.tag }}"
             - name: AUTH_GRPC_URL
               value: "auth-grpc:{{ .Values.auth.port.grpc }}" 
+            - name: JOBS_GRPC_URL
+              value: "0.0.0.0:{{ .Values.jobs.port.grpc }}" 
+            - name: JOBS_DATABASE_URL
+              value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.jobs.database.name }}"
       volumes:
         - name: upload-volume
           persistentVolumeClaim:

@@ -46,6 +46,7 @@
     "full-migrate": "npm run prisma:migrate:auth && npm run prisma:migrate:jobs && npm run drizzle-kit:migrate",
     "start:dev": "concurrently -n AUTH,JOBS,EXECUTOR,PRODUCTS -c blue,green,yellow,magenta \"npm run start:auth\" \"npm run start:jobs\" \"npm run start:executor\" \"npm run start:products\"",
     "drizzle-kit:migrate": "npm run drizzle-kit:migrate --workspace=apps/products",
+    "drizzle-kit:migrate:prod": "npm run drizzle-kit:migrate:prod --workspace=apps/products",
     "drizzle-kit:full-migrate": "npm run drizzle-kit:full-migrate --workspace=apps/products"
   },
   "dependencies": {
