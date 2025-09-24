@@ -17,6 +17,7 @@ COPY libs/common/package*.json ./libs/common/
 COPY libs/graphql/package*.json ./libs/graphql/
 COPY libs/grpc/package*.json ./libs/grpc/
 COPY libs/pulsar/package*.json ./libs/pulsar/
+COPY libs/prisma/package*.json ./libs/prisma/
 RUN npm install
 
 COPY tsconfig*.json ./
@@ -28,7 +29,9 @@ COPY libs/common ./libs/common
 COPY libs/graphql ./libs/graphql
 COPY libs/grpc ./libs/grpc
 COPY libs/pulsar ./libs/pulsar
+COPY libs/prisma ./libs/prisma
 
+RUN npm run prisma:generate:jobs
 RUN npm run generate-ts-proto
 RUN npm run build:jobs
 
@@ -50,16 +53,20 @@ COPY libs/common/package*.json ./libs/common/
 COPY libs/graphql/package*.json ./libs/graphql/
 COPY libs/grpc/package*.json ./libs/grpc/
 COPY libs/pulsar/package*.json ./libs/pulsar/
+COPY libs/prisma/package*.json ./libs/prisma/
 
 RUN npm install --workspace=apps/jobs \
     --workspace=libs/common \
     --workspace=libs/graphql \
     --workspace=libs/grpc \
     --workspace=libs/pulsar \
+    --workspace=libs/prisma \
     --omit=dev && \
     npm cache clean --force
 
 COPY --from=builder /workspace/dist ./dist
+COPY --from=builder /workspace/apps/jobs/prisma ./prisma
+COPY --from=builder /workspace/node_modules/@prisma/client/jobs ./node_modules/@prisma/client/jobs
 
 ENV NODE_ENV=
 ENV JOBS_APP_VERSION=

@@ -4,7 +4,7 @@ import { serialize } from '@app/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { BadRequestException } from '@app/common';
-import { JobsPrismaService } from '@app/prisma';
+import { PrismaService } from '../services/prisma.service';
 import { Prisma } from '@prisma/client/jobs/index.js';
 import { JobStatusEnum } from '../enums/jobs.enum';
 
@@ -12,7 +12,7 @@ export abstract class AbstractJob<T extends object> {
   private producer: Producer | undefined;
   protected abstract messageClass: new () => T;
 
-  constructor(private readonly pulsarClient: PulsarClient, private readonly jobsPrismaService: JobsPrismaService) { }
+  constructor(private readonly pulsarClient: PulsarClient, private readonly prismaService: PrismaService) { }
 
   async execute(data: T, job: string) {
     if (!this.producer) {
@@ -35,7 +35,7 @@ export abstract class AbstractJob<T extends object> {
     }
   }
   private async createJob(jobData: Prisma.jobsCreateInput): Promise<Prisma.jobsGetPayload<{}>> {
-    return this.jobsPrismaService.jobs.create({
+    return this.prismaService.jobs.create({
       data: jobData,
     });
   }

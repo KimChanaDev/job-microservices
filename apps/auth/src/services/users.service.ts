@@ -1,4 +1,4 @@
-import { AuthPrismaService } from '@app/prisma';
+import { PrismaService } from './prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client/auth/index.js';
 import { hash } from 'bcryptjs';
@@ -6,7 +6,7 @@ import { hash } from 'bcryptjs';
 @Injectable()
 export class UsersService {
 
-    constructor(private readonly prismaService: AuthPrismaService) { }
+    constructor(private readonly prismaService: PrismaService) { }
 
     async createUser(userData: Prisma.usersCreateInput) {
         const user = await this.prismaService.users.create({
