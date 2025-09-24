@@ -10,6 +10,8 @@ import { FibonacciJob } from '../jobs/fibonacci/fibonacci.job';
 import { ConfigService } from '@nestjs/config';
 import { LoadProductsJob } from '../jobs/products/load-products.job';
 import { JobsPrismaModule } from '@app/prisma';
+import { JobsController } from '../controllers/jobs.controller';
+import { JobsRepository } from '../repositories/jobs-repository.service';
 
 
 @Module({
@@ -32,7 +34,7 @@ import { JobsPrismaModule } from '@app/prisma';
     ]),
     JobsPrismaModule
   ],
-  controllers: [],
-  providers: [FibonacciJob, JobsService, JobsResolver, LoadProductsJob],
+  controllers: [JobsController],
+  providers: [FibonacciJob, JobsService, JobsRepository, JobsResolver, LoadProductsJob],
 })
 export class JobsModule { }

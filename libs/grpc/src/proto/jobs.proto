@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package jobs;
+
+service JobsService {
+    rpc Acknowledge(AcknowledgeJobRequest) returns (AcknowledgeJobResponse);
+}
+
+message AcknowledgeJobRequest {
+    int32 job_id = 1;
+}
+
+message AcknowledgeJobResponse { }

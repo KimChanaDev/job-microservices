@@ -6,12 +6,15 @@ import { AbstractJob } from '../jobs/abstract.job';
 import { BadRequestException, InternalServerErrorException } from '@app/common';
 import { readFileSync } from 'fs';
 import { UPLOAD_FILE_PATH } from '../consts/upload.const';
+import { JobsRepository } from '../repositories/jobs-repository.service';
+import { Prisma } from '@prisma/client/jobs/index.js';
+import { JobStatusEnum } from '../enums/jobs.enum';
 
 
 @Injectable()
 export class JobsService implements OnModuleInit {
     private jobs: DiscoveredClassWithMeta<JobMetadata>[] = [];
-    constructor(private readonly discoveryService: DiscoveryService) { }
+    constructor(private readonly discoveryService: DiscoveryService, private readonly jobsRepository: JobsRepository) { }
 
     async onModuleInit() {
         this.jobs = await this.discoveryService.providersWithMetaAtKey<JobMetadata>(JOB_METADATA_KEY);
@@ -42,5 +45,21 @@ export class JobsService implements OnModuleInit {
         } catch {
             throw new InternalServerErrorException(`Error reading file: ${fileName}`);
         }
+    }
+
+    public async acknowledge(jobId: number): Promise<Prisma.jobsGetPayload<{}> | null | void> {
+        const job: Prisma.jobsGetPayload<{}> | null = await this.jobsRepository.getJob(jobId);
+        if (!job) {
+            throw new BadRequestException(`Job with ID ${jobId} not found.`);
+        }
+        if (job.endedAt) {
+            return;
+        }
+
+        let updatedJob = await this.jobsRepository.updateJob(jobId, { completed: { increment: 1 } });
+        if (updatedJob.completed === job.size) {
+            updatedJob = await this.jobsRepository.updateJob(jobId, { status: JobStatusEnum.COMPLETED, endedAt: new Date() });
+        }
+        return updatedJob;
     }
 }
