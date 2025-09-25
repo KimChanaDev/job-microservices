@@ -12,7 +12,7 @@ export class JobsRepository {
         });
     }
 
-    async getJobs() {
+    async getJobs(): Promise<Prisma.jobsGetPayload<{}>[]> {
         return this.prismaService.jobs.findMany();
     }
 

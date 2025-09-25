@@ -33,6 +33,7 @@ export abstract class AbstractJob<T extends object> {
     } else {
       this.send({ ...data, jobId: createJobRecord.id });
     }
+    return createJobRecord;
   }
   private async createJob(jobData: Prisma.jobsCreateInput): Promise<Prisma.jobsGetPayload<{}>> {
     return this.prismaService.jobs.create({

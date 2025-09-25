@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveredClassWithMeta, DiscoveryService, } from '@golevelup/nestjs-discovery';
 import { JOB_METADATA_KEY } from '../decorators/job.decorator';
 import { JobMetadata } from '../interfaces/job-metadata.interface';
@@ -9,7 +9,8 @@ import { UPLOAD_FILE_PATH } from '../consts/upload.const';
 import { JobsRepository } from '../repositories/jobs-repository.service';
 import { Prisma } from '@prisma/client/jobs/index.js';
 import { JobStatusEnum } from '../enums/jobs.enum';
-
+import { JobStatusModel } from '../models/job-status.model';
+import { NotFoundException } from '@app/common';
 
 @Injectable()
 export class JobsService implements OnModuleInit {
@@ -20,8 +21,20 @@ export class JobsService implements OnModuleInit {
         this.jobs = await this.discoveryService.providersWithMetaAtKey<JobMetadata>(JOB_METADATA_KEY);
     }
 
-    getJobs() {
+    public getJobsMetadata(): JobMetadata[] {
         return this.jobs.map((job) => job.meta);
+    }
+
+    public async getJobsStatus(): Promise<JobStatusModel[]> {
+        return await this.jobsRepository.getJobs();
+    }
+
+    public async getJobStatus(id: number): Promise<JobStatusModel> {
+        const job = await this.jobsRepository.getJob(id);
+        if (!job) {
+            throw new NotFoundException(`Job with ID ${id} not found`);
+        }
+        return job;
     }
 
     async executeJob(name: string, data: any) {
@@ -33,8 +46,7 @@ export class JobsService implements OnModuleInit {
             throw new InternalServerErrorException('Job is not an instance of AbstractJob');
         }
         const executeData = data.fileName ? this.getFile(data.fileName as string) || data : data;
-        await job.discoveredClass.instance.execute(executeData, job.meta.name);
-        return job.meta;
+        return await job.discoveredClass.instance.execute(executeData, job.meta.name);
     }
 
     private getFile(fileName?: string) {

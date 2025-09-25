@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class JobModel {
+export class JobMetadataModel {
     @Field()
     name!: string;
 
