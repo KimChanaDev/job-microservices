@@ -4,8 +4,7 @@ import cookieParser from 'cookie-parser';
 import { isProdEnv } from './environment.config';
 import { Logger } from 'nestjs-pino'
 
-export async function init(app: INestApplication, portEnv: string) {
-  const globalPrefix = 'api';
+export async function init(app: INestApplication, portEnv: string, globalPrefix: string) {
   // Configure global validation pipe with security and error handling settings
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe({

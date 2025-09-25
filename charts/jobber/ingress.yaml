@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jobber-ingress
+  namespace: jobber
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Access-Control-Allow-Origin *;
+      proxy_set_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+      proxy_set_header Access-Control-Allow-Headers 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Cookie,Authorization';
+      proxy_set_header Access-Control-Expose-Headers 'Content-Length,Content-Range';
+      proxy_set_header Access-Control-Allow-Credentials true;
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: jobber.local
+      http:
+        paths:
+          - path: /jobs
+            pathType: Prefix
+            backend:
+              service:
+                name: jobs-http
+                port:
+                  number: { { .Values.jobs.port.http } }
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-http
+                port:
+                  number: { { .Values.auth.port.http } }

@@ -18,6 +18,7 @@ import { PrismaModule } from './modules/prisma.module';
     GraphQLModule.forRoot<YogaDriverConfig>({
       driver: YogaDriver,
       autoSchemaFile: true,
+      useGlobalPrefix: true,
       plugins: [
         gqlLoggingPlugin()
       ],

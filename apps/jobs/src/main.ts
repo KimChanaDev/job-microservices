@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create(JobsAppModule, { bufferLogs: true });
   app.useGlobalFilters(new GraphQLExceptionFilter());
-  init(app, "JOBS_PORT");
+  init(app, "JOBS_PORT", "jobs");
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
     options: {

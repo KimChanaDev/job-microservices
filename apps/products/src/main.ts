@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(ProductsAppModule, { bufferLogs: true });
-  await init(app, "PRODUCTS_PORT");
+  await init(app, "PRODUCTS_PORT", "products");
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
     options: {

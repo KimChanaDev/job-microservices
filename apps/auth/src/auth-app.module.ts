@@ -18,6 +18,7 @@ import { LoggerModule } from '@app/common';
       driver: YogaDriver,
       context: ({ req, res }: GqlContext) => ({ req, res }),
       autoSchemaFile: true,
+      useGlobalPrefix: true,
       plugins: [
         gqlLoggingPlugin()
       ],
