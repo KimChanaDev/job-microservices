@@ -8,14 +8,17 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/group.name: my-ingress-group
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:028767427893:certificate/038029d9-fb0f-438c-9d66-810065acbcf7
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
   {{- end }}
 spec:
   {{- if .Values.ingress.alb }}
   ingressClassName: alb
   {{- end }}
   rules:
-    - http:
+    - host: {{- if .Values.ingress.alb }} jobber.kimchana.site {{- else }} jobber.local {{- end }}  
+      http:
         paths:
           - path: /jobs
             pathType: Prefix
@@ -31,6 +34,3 @@ spec:
                 name: auth-http
                 port:
                   number: {{ .Values.auth.port.http }}
-      {{- if not .Values.ingress.alb }}
-      host: jobber.local
-      {{- end }}

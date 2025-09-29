@@ -26,9 +26,10 @@ export class AuthenticationService {
             userId: user.id,
         };
         const accessToken = this.jwtService.sign(tokenPayload);
+        const isSecureEnv = this.configService.get('AUTH_SECURE_COOKIES');
         response.cookie('Authentication', accessToken, {
             httpOnly: true,
-            secure: isProdEnv(this.configService), //https only for production
+            secure: (isSecureEnv && typeof isSecureEnv === 'string' && isSecureEnv.toLowerCase() === 'false') ? false : !!isSecureEnv, //https only for production
             expires,
         });
         return user;

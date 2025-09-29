@@ -66,6 +66,8 @@ spec:
               value: "{{ .Values.auth.jwt.secret }}"
             - name: AUTH_JWT_EXPIRATION_MS
               value: "{{ .Values.auth.jwt.expirationMs }}"
+            - name: AUTH_SECURE_COOKIES
+              value: "{{ .Values.auth.jwt.secure }}"
             - name: AUTH_DATABASE_URL
               value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.auth.database.name }}"
 {{- end }}

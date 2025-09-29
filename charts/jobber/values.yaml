@@ -69,6 +69,7 @@ auth:
   jwt:
     secret: YxD1NH9ox4zu81AoiTEng10kVgPOYIhf
     expirationMs: '2880000'
+    secure: false
   database:
     name: auth
 

@@ -24,5 +24,13 @@ pulsar:
 
 postgresql:
   primary:
+    resources:
+      limits:
+        # lower cpu is given by default, thus give 1 cpu for better performance cause we increase write by increase consumer
+        cpu: 1
     persistence:
       storageClass: 'ebs-sc'
+
+auth:
+  jwt:
+    secure: true
