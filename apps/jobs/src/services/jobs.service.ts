@@ -37,7 +37,7 @@ export class JobsService implements OnModuleInit {
         return job;
     }
 
-    async executeJob(name: string, data: any) {
+    async executeJob(name: string, data: any): Promise<Prisma.jobsGetPayload<{}>> {
         const job = this.jobs.find((job) => job.meta.name === name);
         if (!job) {
             throw new BadRequestException(`Job not found: ${name}`);

@@ -29,7 +29,7 @@ export class JobsResolver {
         return this.jobsService.getJobStatus(id);
     }
 
-    @Mutation(() => JobMetadataModel)
+    @Mutation(() => JobStatusModel)
     @UseGuards(GqlAuthGuardForExternalService)
     async executeJob(@Args('executeJobInput') executeJobInput: ExecuteJobInput) {
         return this.jobsService.executeJob(

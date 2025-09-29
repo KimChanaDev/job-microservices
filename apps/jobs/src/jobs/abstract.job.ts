@@ -14,7 +14,7 @@ export abstract class AbstractJob<T extends object> {
 
   constructor(private readonly pulsarClient: PulsarClient, private readonly prismaService: PrismaService) { }
 
-  async execute(data: T, job: string) {
+  async execute(data: T, job: string): Promise<Prisma.jobsGetPayload<{}>> {
     if (!this.producer) {
       this.producer = await this.pulsarClient.createProducer(job);
     }
