@@ -3,40 +3,25 @@ global:
   forceUpdate: ''
   nodeEnv: staging
 
+ingress:
+  alb: false
+
+persistence:
+  ebs: false
+
 pulsar:
   namespace: pulsar
   namespaceCreate: true
   zookeeper:
     replicaCount: 1
-    resources:
-      requests:
-        memory: '256Mi'
-        cpu: '100m'
-      limits:
-        memory: '512Mi'
-        cpu: '500m'
     podMonitor:
       enabled: false
   broker:
     replicaCount: 1
-    resources:
-      requests:
-        memory: '256Mi'
-        cpu: '100m'
-      limits:
-        memory: '512Mi'
-        cpu: '500m'
     podMonitor:
       enabled: false
   bookkeeper:
     replicaCount: 1
-    resources:
-      requests:
-        memory: '256Mi'
-        cpu: '100m'
-      limits:
-        memory: '512Mi'
-        cpu: '500m'
     podMonitor:
       enabled: false
   autorecovery:
@@ -63,13 +48,6 @@ postgresql:
     password: postgres
     database: postgres
   primary:
-    resources:
-      requests:
-        memory: '256Mi'
-        cpu: '100m'
-      limits:
-        memory: '512Mi'
-        cpu: '500m'
     persistence:
       size: 2Gi
     initdb:

@@ -3,23 +3,19 @@ kind: Ingress
 metadata:
   name: jobber-ingress
   namespace: jobber
+  {{- if .Values.ingress.alb }}
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-    nginx.ingress.kubernetes.io/use-regex: 'true'
-    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
-    nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
-    nginx.ingress.kubernetes.io/enable-cors: 'true'
-    nginx.ingress.kubernetes.io/cors-allow-origin: '*'
-    nginx.ingress.kubernetes.io/cors-allow-methods: 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
-    nginx.ingress.kubernetes.io/cors-allow-headers: 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Cookie,Authorization,Accept,Origin'
-    nginx.ingress.kubernetes.io/cors-expose-headers: 'Content-Length,Content-Range'
-    nginx.ingress.kubernetes.io/cors-allow-credentials: 'true'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: my-ingress-group
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  {{- if .Values.ingress.alb }}
+  ingressClassName: alb
+  {{- end }}
   rules:
-    - host: jobber.local
-      http:
+    - http:
         paths:
           - path: /jobs
             pathType: Prefix
@@ -27,11 +23,14 @@ spec:
               service:
                 name: jobs-http
                 port:
-                  number: { { .Values.jobs.port.http } }
+                  number: {{ .Values.jobs.port.http }}
           - path: /auth
             pathType: Prefix
             backend:
               service:
                 name: auth-http
                 port:
-                  number: { { .Values.auth.port.http } }
+                  number: {{ .Values.auth.port.http }}
+      {{- if not .Values.ingress.alb }}
+      host: jobber.local
+      {{- end }}

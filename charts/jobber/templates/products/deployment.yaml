@@ -26,13 +26,6 @@ spec:
           image: {{ .Values.products.image.repository }}:{{ .Values.products.image.tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           workingDir: /app
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "50m"
-            limits:
-              memory: "256Mi"
-              cpu: "200m"
           command: ['sh', '-c']
           args:
             - |
@@ -61,13 +54,6 @@ spec:
           ports:
             - containerPort: {{ .Values.products.port.http }}
             - containerPort: {{ .Values.products.port.grpc }}
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             {{- include "common.env" . | nindent 12 }} 
             - name: PRODUCTS_PORT

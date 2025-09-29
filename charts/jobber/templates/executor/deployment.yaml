@@ -27,13 +27,6 @@ spec:
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           ports:
             - containerPort: {{ .Values.executor.port.http }}
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             {{- include "common.env" . | nindent 12 }}
             - name: EXECUTOR_PORT

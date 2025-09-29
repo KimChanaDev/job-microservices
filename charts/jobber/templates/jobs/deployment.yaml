@@ -26,13 +26,6 @@ spec:
           image: {{ .Values.jobs.image.repository }}:{{ .Values.jobs.image.tag }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           workingDir: /app
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "50m"
-            limits:
-              memory: "256Mi"
-              cpu: "200m"
           command: ['sh', '-c']
           args:
             - |
@@ -63,13 +56,6 @@ spec:
               mountPath: /app/apps/jobs/uploads
           ports:
             - containerPort: {{ .Values.jobs.port.http }}
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             {{- include "common.env" . | nindent 12 }} 
             - name: JOBS_PORT
