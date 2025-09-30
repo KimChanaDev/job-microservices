@@ -37,4 +37,12 @@ spec:
               value: "products-grpc:{{ .Values.products.port.grpc }}"
             - name: JOBS_GRPC_URL
               value: "jobs-grpc:{{ .Values.jobs.port.grpc }}"
+          livenessProbe:
+            httpGet:
+              path: /executor/healthcheck
+              port: {{ .Values.executor.port.http }}
+          readinessProbe:
+            httpGet:
+              path: /executor/healthcheck
+              port: {{ .Values.executor.port.http }}
 {{- end }}

@@ -70,4 +70,12 @@ spec:
               value: "{{ .Values.auth.jwt.secure }}"
             - name: AUTH_DATABASE_URL
               value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.auth.database.name }}"
+          livenessProbe:
+            httpGet:
+              path: /auth/healthcheck
+              port: {{ .Values.auth.port.http }}
+          readinessProbe:
+            httpGet:
+              path: /auth/healthcheck
+              port: {{ .Values.auth.port.http }}
 {{- end }}

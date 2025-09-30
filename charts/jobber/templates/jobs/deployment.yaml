@@ -68,6 +68,14 @@ spec:
               value: "0.0.0.0:{{ .Values.jobs.port.grpc }}" 
             - name: JOBS_DATABASE_URL
               value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.jobs.database.name }}"
+          livenessProbe:
+            httpGet:
+              path: /jobs/healthcheck
+              port: {{ .Values.jobs.port.http }}
+          readinessProbe:
+            httpGet:
+              path: /jobs/healthcheck
+              port: {{ .Values.jobs.port.http }}
       volumes:
         - name: upload-volume
           persistentVolumeClaim:

@@ -9,8 +9,42 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/group.name: my-ingress-group
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:028767427893:certificate/038029d9-fb0f-438c-9d66-810065acbcf7
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:028767427893:certificate/b1aff7a8-353f-4019-bbf6-c8936ff27925
     alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-path: /jobs/healthcheck
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "10"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
+    alb.ingress.kubernetes.io/actions.response-headers: |
+      {
+        "Type": "forward",
+        "ResponseHeadersConfig": {
+          "ResponseHeadersToAdd": [
+            {
+              "Key": "Strict-Transport-Security",
+              "Value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "Key": "X-Content-Type-Options",
+              "Value": "nosniff"
+            },
+            {
+              "Key": "X-Frame-Options",
+              "Value": "DENY"
+            },
+            {
+              "Key": "X-XSS-Protection",
+              "Value": "1; mode=block"
+            }
+          ]
+        }
+      }
   {{- end }}
 spec:
   {{- if .Values.ingress.alb }}

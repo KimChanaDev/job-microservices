@@ -64,4 +64,12 @@ spec:
               value: "0.0.0.0:{{ .Values.products.port.grpc }}"
             - name: PRODUCTS_DATABASE_URL
               value: "postgresql://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ .Release.Name }}-postgresql.{{ .Values.postgresql.namespaceOverride }}.svc.cluster.local:5432/{{ .Values.products.database.name }}"
+          livenessProbe:
+            httpGet:
+              path: /products/healthcheck
+              port: {{ .Values.products.port.http }}
+          readinessProbe:
+            httpGet:
+              path: /products/healthcheck
+              port: {{ .Values.products.port.http }}
 {{- end }}
