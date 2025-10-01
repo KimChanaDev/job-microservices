@@ -1,157 +1,157 @@
+# Docker Compose file for Jobber Microservices
+# Environment: Development
+# Note: set DOCKER_BUILDKIT=0 for fix problem "changes out of order"
+
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.6
     container_name: jobber-postgres
     environment:
-      POSTGRES_USER: jobber
-      POSTGRES_PASSWORD: jobber
-      POSTGRES_DB: jobber
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     ports:
       - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U jobber']
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  auth-service:
+  broker:
+    image: apachepulsar/pulsar:4.1.1
+    container_name: jobber-pulsar
+    command: bin/pulsar standalone
+    restart: on-failure
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+
+  # Auth Service
+  auth:
     build:
       context: .
       dockerfile: apps/auth/Dockerfile
     container_name: jobber-auth
+    ports:
+      - '3000:3000'  # HTTP port
+      - '5000:5000'  # gRPC port
     environment:
       - NODE_ENV=development
-      - AUTH_APP_VERSION=1.0.0
-      - AUTH_DATABASE_URL=postgresql://jobber:jobber@postgres:5432/jobber
+      - AUTH_APP_VERSION=latest
       - AUTH_PORT=3000
       - AUTH_GRPC_URL=0.0.0.0:5000
       - AUTH_JWT_SECRET=YxD1NH9ox4zu81AoiTEng10kVgPOYIhf
       - AUTH_JWT_EXPIRATION_MS=2880000
-    ports:
-      - '3000:3000'
-      - '5000:5000'
+      - AUTH_SECURE_COOKIES=false
+      - AUTH_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/auth
+      - PULSAR_SERVICE_URL=pulsar://broker:6650
+    entrypoint: ["/app/entrypoint.sh"]
+    command: ["npm", "run", "start:auth:prod"]
     depends_on:
       postgres:
         condition: service_healthy
-    restart: unless-stopped
+      broker:
+        condition: service_started
     healthcheck:
-      test: ['CMD-SHELL', 'curl -f http://localhost:3000/healthcheck || exit 1']
+      test: ["CMD", "curl", "-f", "http://localhost:3000/auth/healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
 
-  jobs-service:
+  # Jobs Service
+  jobs:
     build:
       context: .
       dockerfile: apps/jobs/Dockerfile
     container_name: jobber-jobs
+    ports:
+      - '3001:3001'  # HTTP port
+      - '5002:5002'  # gRPC port
     environment:
       - NODE_ENV=development
-      - JOBS_APP_VERSION=1.0.0
+      - JOBS_APP_VERSION=latest
       - JOBS_PORT=3001
-      - JOBS_GRPC_URL=auth-service:5000
+      - JOBS_GRPC_URL=0.0.0.0:5002
+      - AUTH_GRPC_URL=auth:5000
+      - JOBS_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/jobs
       - PULSAR_SERVICE_URL=pulsar://broker:6650
-    ports:
-      - '3001:3001'
+    entrypoint: ["/app/entrypoint.sh"]
+    command: ["npm", "run", "start:jobs:prod"]
+    volumes:
+      - jobs_uploads:/app/apps/jobs/uploads
     depends_on:
-      auth-service:
+      postgres:
+        condition: service_healthy
+      broker:
         condition: service_started
-    restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'curl -f http://localhost:3001/healthcheck || exit 1']
+      test: ["CMD", "curl", "-f", "http://localhost:3001/jobs/healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
 
-  # Start zookeeper
-  zookeeper:
-    image: apachepulsar/pulsar:latest
-    container_name: zookeeper
-    restart: on-failure
-    volumes:
-      - ./data/zookeeper:/pulsar/data/zookeeper
-    environment:
-      - metadataStoreUrl=zk:zookeeper:2181
-      - PULSAR_MEM=-Xms256m -Xmx256m -XX:MaxDirectMemorySize=256m
-    command:
-      - bash
-      - -c
-      - |
-        bin/apply-config-from-env.py conf/zookeeper.conf && \
-        bin/generate-zookeeper-config.sh conf/zookeeper.conf && \
-        exec bin/pulsar zookeeper
-    healthcheck:
-      test: ['CMD', 'bin/pulsar-zookeeper-ruok.sh']
-      interval: 10s
-      timeout: 5s
-      retries: 30
-
-  # Init cluster metadata
-  pulsar-init:
-    container_name: pulsar-init
-    hostname: pulsar-init
-    image: apachepulsar/pulsar:latest
-    command:
-      - bash
-      - -c
-      - |
-        bin/pulsar initialize-cluster-metadata \
-        --cluster cluster-a \
-        --zookeeper zookeeper:2181 \
-        --configuration-store zookeeper:2181 \
-        --web-service-url http://broker:8080 \
-        --broker-service-url pulsar://broker:6650
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-
-  # Start bookie
-  bookie:
-    image: apachepulsar/pulsar:latest
-    container_name: bookie
-    restart: on-failure
-    environment:
-      - clusterName=cluster-a
-      - zkServers=zookeeper:2181
-      - metadataServiceUri=metadata-store:zk:zookeeper:2181
-      # otherwise every time we run docker compose uo or down we fail to start due to Cookie
-      # See: https://github.com/apache/bookkeeper/blob/405e72acf42bb1104296447ea8840d805094c787/bookkeeper-server/src/main/java/org/apache/bookkeeper/bookie/Cookie.java#L57-68
-      - advertisedAddress=bookie
-      - BOOKIE_MEM=-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      pulsar-init:
-        condition: service_completed_successfully
-
-    # Map the local directory to the container to avoid bookie startup failure due to insufficient container disks.
-    volumes:
-      - ./data/bookkeeper:/pulsar/data/bookkeeper
-    command: bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
-
-  # Start broker
-  broker:
-    image: apachepulsar/pulsar:latest
-    container_name: broker
-    hostname: broker
-    restart: on-failure
-    environment:
-      - metadataStoreUrl=zk:zookeeper:2181
-      - zookeeperServers=zookeeper:2181
-      - clusterName=cluster-a
-      - managedLedgerDefaultEnsembleSize=1
-      - managedLedgerDefaultWriteQuorum=1
-      - managedLedgerDefaultAckQuorum=1
-      - advertisedAddress=broker
-      - advertisedListeners=external:pulsar://127.0.0.1:6650
-      - PULSAR_MEM=-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      bookie:
-        condition: service_started
+  # Executor Service
+  executor:
+    build:
+      context: .
+      dockerfile: apps/executor/Dockerfile
+    container_name: jobber-executor
     ports:
-      - '6650:6650'
-      - '8080:8080'
+      - '3002:3002'  # HTTP port
+    environment:
+      - NODE_ENV=development
+      - EXECUTOR_APP_VERSION=latest
+      - EXECUTOR_PORT=3002
+      - PRODUCTS_GRPC_URL=products:5001
+      - JOBS_GRPC_URL=jobs:5002
+      - PULSAR_SERVICE_URL=pulsar://broker:6650
+    command: ["npm", "run", "start:executor:prod"]
+    depends_on:
+      broker:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/executor/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-    command: bash -c "bin/apply-config-from-env.py conf/broker.conf && exec bin/pulsar broker"
+  # Products Service
+  products:
+    build:
+      context: .
+      dockerfile: apps/products/Dockerfile
+    container_name: jobber-products
+    ports:
+      - '3003:3003'  # HTTP port
+      - '5001:5001'  # gRPC port
+    environment:
+      - NODE_ENV=development
+      - PRODUCTS_APP_VERSION=latest
+      - PRODUCTS_PORT=3003
+      - PRODUCTS_GRPC_URL=0.0.0.0:5001
+      - PRODUCTS_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/products
+      - PULSAR_SERVICE_URL=pulsar://broker:6650
+    entrypoint: ["/app/entrypoint.sh"]
+    command: ["npm", "run", "start:products:prod"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/products/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+  jobs_uploads:

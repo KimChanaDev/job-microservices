@@ -1,9 +1,10 @@
 import { ConfigService } from "@nestjs/config"
 
 export function isProdEnv(configService: ConfigService): boolean {
-  return configService.getOrThrow('NODE_ENV') === 'production' || configService.getOrThrow('NODE_ENV') === 'prod'
+  const env = configService.getOrThrow<string>('NODE_ENV').toLowerCase();
+  return env === 'production' || env === 'prod';
 }
 
-export function isDevEnv(configService: ConfigService): boolean {
-  return configService.getOrThrow('NODE_ENV') === 'development' || configService.getOrThrow('NODE_ENV') === 'dev'
+export function isLocalEnv(configService: ConfigService): boolean {
+  return configService.getOrThrow<string>('NODE_ENV').toLowerCase() === 'local'
 }

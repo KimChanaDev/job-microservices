@@ -1,0 +1,34 @@
+# Docker Compose file for Jobber Microservices
+# Environment: Local
+# Note: set DOCKER_BUILDKIT=0 for fix problem "changes out of order"
+
+services:
+  postgres:
+    image: postgres:17.6
+    container_name: jobber-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  broker:
+    image: apachepulsar/pulsar:4.1.1
+    container_name: jobber-pulsar
+    command: bin/pulsar standalone
+    restart: on-failure
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+
+volumes:
+  postgres_data:

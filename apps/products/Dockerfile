@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
@@ -55,6 +56,8 @@ COPY apps/products/drizzle.config.ts ./apps/products/drizzle.config.ts
 COPY apps/products/drizzle ./apps/products/drizzle
 
 COPY --from=builder /workspace/dist ./dist
+COPY --from=builder /workspace/apps/products/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 ENV NODE_ENV=
 ENV PULSAR_SERVICE_URL=

@@ -1,17 +1,17 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 import { ConfigService } from "@nestjs/config";
-import { isDevEnv } from "../environment.config";
+import { isLocalEnv } from "../environment.config";
 
 
 @Module({
     imports: [
         PinoLoggerModule.forRootAsync({
             useFactory: (configService: ConfigService) => {
-                const isDev = isDevEnv(configService);
+                const isLocal = isLocalEnv(configService);
                 return {
                     pinoHttp: {
-                        transport: isDev
+                        transport: isLocal
                             ? {
                                 target: 'pino-pretty',
                                 options: {
@@ -19,7 +19,7 @@ import { isDevEnv } from "../environment.config";
                                 }
                             }
                             : undefined,
-                        level: isDev ? 'debug' : 'info'
+                        level: isLocal ? 'debug' : 'info'
                     }
                 }
             },

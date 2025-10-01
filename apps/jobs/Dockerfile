@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
@@ -67,6 +68,8 @@ RUN npm install --workspace=apps/jobs \
 COPY --from=builder /workspace/dist ./dist
 COPY --from=builder /workspace/apps/jobs/prisma ./prisma
 COPY --from=builder /workspace/node_modules/@prisma/client/jobs ./node_modules/@prisma/client/jobs
+COPY --from=builder /workspace/apps/jobs/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 ENV NODE_ENV=
 ENV JOBS_APP_VERSION=
