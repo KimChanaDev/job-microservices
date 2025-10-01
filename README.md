@@ -175,7 +175,7 @@ npm install
 
 ### 3. Environment Configuration
 
-Create `.env` files for each service based on `.env.example` files in each app directory.
+Create `.env` file based on `.env.example` file in root directory.
 
 ## 🐳 Running with Docker Compose
 
